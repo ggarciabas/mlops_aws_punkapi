@@ -13,6 +13,7 @@
 ### Colab
 
 Para acessar os notebooks via colab:
+- [Exploração da API](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/exp_punkapi/notebooks/Explora_API.ipynb)
 
 
 ## Referências de estudo
