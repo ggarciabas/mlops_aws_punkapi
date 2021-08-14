@@ -22,5 +22,6 @@ Para acessar os notebooks via colab:
 - [AWS S3 File Upload + Lambda Trigger (Tutorial In Python) | Step by Step Guide](https://youtu.be/H_rRlnSw_5s)
 - [Serverless](https://aws.amazon.com/getting-started/deep-dive-serverless/?e=gs2020&p=gsrc)
 - [How to Handle your Python packaging in Lambda with Serverless plugins](https://www.serverless.com/blog/serverless-python-packaging)
+- [Github and Colab](https://colab.research.google.com/github/googlecolab/colabtools/blob/master/notebooks/colab-github-demo.ipynb#scrollTo=8QAWNjizy_3O)
 
 <!-- Icons: https://simpleicons.org/ Shields: https://img.shields.io/badge-->
