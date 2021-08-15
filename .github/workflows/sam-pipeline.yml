@@ -27,7 +27,6 @@ jobs:
       # sam deploy
       # caminho passa a ser relativo ao container
       - run: sam deploy --no-fail-on-empty-changeset
-                        --template ./sam-aws/template.yaml 
                         --stack-name punk-api-stack
                         --s3-bucket github-action-aws
                         --region sa-east-1
