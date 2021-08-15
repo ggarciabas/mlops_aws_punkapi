@@ -50,6 +50,6 @@ def lambda_handler (event, context):
                             Data=encoded_data,
                             PartitionKey='1'
                             )
-        pprint(kinesis_resp)
+        print(kinesis_resp)
     
     return None
