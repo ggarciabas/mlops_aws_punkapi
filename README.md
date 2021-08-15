@@ -32,6 +32,11 @@ Para acessar os notebooks via colab:
 
 ### Kinesis 
 
+#### Data Stream
+> A Kinesis stream captures and transports data records that are emitted from data sources.
+
+- [AWS::Kinesis::Stream](https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html)
+
 #### Data Firehouse
 > Kinesis Data Firehose can invoke your Lambda function to transform incoming source data and deliver the transformed data to destinations. You can enable Kinesis Data Firehose data transformation when you create your delivery stream.
 
