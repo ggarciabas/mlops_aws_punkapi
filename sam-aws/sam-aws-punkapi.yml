@@ -1,6 +1,19 @@
-
+# Machine Learning Platform Engineer - Desafio Punk API
+# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Configura recursos AWS para desafio PunkAPI
 
+# Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
+  # LogicalID
+  PunkAPICliLambda:
+    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: punkapi_cli/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      FunctionName: PunkAPICliLambdaFunction
+      VersionDescription: 0.01
+      Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
