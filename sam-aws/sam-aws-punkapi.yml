@@ -30,7 +30,7 @@ Resources:
           KinesisStreamName: !Ref KinesisStreamName
       # Permite enviar dados para Kinesis
       Policies: 
-        - !Ref KinesisPutRecordRole
+        - KinesisPutRecordPolicy
   # Cria AWS Kinesis Data Stream  
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
@@ -63,9 +63,6 @@ Resources:
                 - kinesis:PutRecord
               Effect: Allow
               Resource:
-                - !GetAtt KinesisStream.Arn
-                - !Sub
-                  - ${Arn}/*
-                  - { Arn: !GetAtt KinesisStream.Arn }
+                - !Ref KinesisStream
       RoleName: "KinesisPutRecordRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis." 
