@@ -24,6 +24,5 @@ Resources:
     Type: AWS::Kinesis::Stream
     Properties:
       Name: "PunkAPIKinesisStream"
-      RetentionPeriodHours: 12
       ShardCount: 1      
   # Ref: https://serverlessland.com/patterns/kinesis-lambda
