@@ -48,7 +48,7 @@ Resources:
         Statement:
           - Effect: "Allow"
             Principal:
-              Service: "kinesis.sa-east-1.amazonaws.com"
+              Service: "kinesis.amazonaws.com"
               # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
             Action: 
               - "sts:AssumeRole"
