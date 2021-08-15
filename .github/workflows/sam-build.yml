@@ -1,4 +1,4 @@
-name: Github Action para publicar recursos na AWS
+name: Github Action para validar SAM para publicação
 
 on:
   push:
@@ -25,16 +25,5 @@ jobs:
                         --base-dir ./sam-aws
                         --region sa-east-1          
                         --debug
-      # sam deploy
-      # caminho passa a ser relativo ao container
-      - run: sam deploy --no-confirm-changeset
-                        --no-fail-on-empty-changeset
-                        --template .aws-sam/build/template.yaml
-                        --stack-name punk-api-stack
-                        --s3-bucket github-action-aws
-                        --region sa-east-1
-                        --capabilities CAPABILITY_IAM
-                        --debug
-
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
 ### aws cloudformation delete-stack --stack-name <<stack-name>>
