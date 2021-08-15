@@ -15,5 +15,5 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.8
       FunctionName: PunkAPICliLambdaFunction
-      VersionDescription: 0.01
+      VersionDescription: "0.01"
       Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."

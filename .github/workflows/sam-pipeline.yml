@@ -18,10 +18,23 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # São Paulo 
-          aws-region: sa-east-1          
+          aws-region: sa-east-1
       # sam build 
-      - run: sam build --use-container --template ./sam-aws/sam-aws-punkapi.yml --base-dir ./sam-aws --build-dir ./sam-aws
+      - run: sam build --use-container 
+                        --template ./sam-aws/sam-aws-punkapi.yml
+                        --base-dir ./sam-aws
+                        --region sa-east-1          
+                        --debug
       # sam deploy
-      - run: sam deploy --no-fail-on-empty-changeset --template ./sam-aws/sam-aws-punkapi.yml
+      # caminho passa a ser relativo ao container
+      - run: sam deploy --no-confirm-changeset
+                        --no-fail-on-empty-changeset
+                        --template .aws-sam/build/template.yaml
+                        --stack-name punk-api-stack
+                        --s3-bucket github-action-aws
+                        --region sa-east-1
+                        --capabilities CAPABILITY_IAM
+                        --debug
 
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
+### aws cloudformation delete-stack --stack-name <<stack-name>>

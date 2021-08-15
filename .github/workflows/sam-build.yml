@@ -1,7 +1,7 @@
 name: Github Action para validar SAM para publicação
 
 on:
-  pull_request:
+  push:
     branches:
       - gaction_aws
 jobs:
@@ -18,8 +18,12 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # São Paulo 
-          aws-region: sa-east-1          
+          aws-region: sa-east-1
       # sam build 
-      - run: sam build --use-container --template ./sam-aws/sam-aws-punkapi.yml --base-dir ./sam-aws --build-dir ./sam-aws
-
+      - run: sam build --use-container 
+                        --template ./sam-aws/sam-aws-punkapi.yml
+                        --base-dir ./sam-aws
+                        --region sa-east-1          
+                        --debug
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
+### aws cloudformation delete-stack --stack-name <<stack-name>>
