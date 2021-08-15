@@ -37,3 +37,4 @@ jobs:
                         --debug
 
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
+### aws cloudformation delete-stack --stack-name <<stack-name>>
