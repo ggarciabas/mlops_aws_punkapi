@@ -39,7 +39,7 @@ def lambda_handler (event, context):
         # Recupera dados da requisição
         try:
             res_json = res.json()
-            pprint (res_json[0])
+            print (res_json[0])
             encoded_data = str(res_json[0]).encode()
             print (encoded_data)
         except:
