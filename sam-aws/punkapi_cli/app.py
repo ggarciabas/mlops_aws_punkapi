@@ -43,7 +43,7 @@ def lambda_handler (event, context):
         print (encoded_data)
 
         # Envia dados para Kinesis
-        print ("Envia dados para Kinesis Data Stream.")
+        print (f"Envia dados para Kinesis Data Stream: {kinesis_stream}")
         client = boto3.client('kinesis')
         kinesis_resp = client.put_record(
                             StreamName=kinesis_stream,

@@ -27,7 +27,7 @@ Resources:
       Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
       Environment:
         Variables:
-          DestinationBucketName: !Ref KinesisStreamName
+          KinesisStreamName: !Ref KinesisStreamName
   # Cria AWS Kinesis Data Stream  
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
