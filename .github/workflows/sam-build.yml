@@ -1,7 +1,7 @@
 name: Github Action para validar SAM para publicação
 
 on:
-  push:
+  pull_request:
     branches:
       - gaction_aws
 jobs:
