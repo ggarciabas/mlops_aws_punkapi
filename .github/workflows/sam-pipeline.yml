@@ -22,12 +22,13 @@ jobs:
       # sam build 
       - run: sam build --use-container 
                         --template ./sam-aws/sam-aws-punkapi.yml
-                        --build-dir ./sam-aws            
+                        --build-dir ./sam-aws  
+                        --regin sa-east-1          
                         --debug
       # sam deploy
       # caminho passa a ser relativo ao container
       - run: sam deploy --no-fail-on-empty-changeset
-                        --template ./sam-aws/sam-aws-punkapi.yaml 
+                        --template ./sam-aws/template.yaml 
                         --stack-name punk-api-stack
                         --s3-bucket github-action-aws
                         --region sa-east-1
