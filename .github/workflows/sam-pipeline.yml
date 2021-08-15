@@ -34,7 +34,7 @@ jobs:
                         --stack-name punk-api-stack
                         --s3-bucket github-action-aws
                         --region sa-east-1
-                        --capabilities CAPABILITY_IAM
+                        --capabilities CAPABILITY_NAMED_IAM
                         --debug
 
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
