@@ -20,8 +20,9 @@ jobs:
           # São Paulo 
           aws-region: sa-east-1
       # sam build 
-      - run: sam build --template ./sam-aws/sam-aws-punkapi.yml
-                        --build-dir ./sam-aws  
+      - run: sam build --use-container 
+                        --template ./sam-aws/sam-aws-punkapi.yml
+                        --base-dir ./sam-aws
                         --region sa-east-1          
                         --debug
       # sam deploy
