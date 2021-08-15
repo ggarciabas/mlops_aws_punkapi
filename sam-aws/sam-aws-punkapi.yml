@@ -6,6 +6,7 @@ Description: Configura recursos AWS para desafio PunkAPI
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
+  # Função Lambda para consumir API
   # LogicalID
   PunkAPICliLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
@@ -17,3 +18,12 @@ Resources:
       FunctionName: PunkAPICliLambdaFunction
       VersionDescription: "0.01"
       Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
+  # Cria AWS Kinesis Data Stream  
+  KinesisStream:
+    # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: "PunkAPIKinesisStream"
+      RetentionPeriodHours: 12
+      ShardCount: 1      
+  # Ref: https://serverlessland.com/patterns/kinesis-lambda
