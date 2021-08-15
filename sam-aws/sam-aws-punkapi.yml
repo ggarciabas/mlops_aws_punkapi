@@ -46,14 +46,26 @@ Resources:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-          Action:
-            - kinesis:PutRecord
-          Effect: Allow
-          Resource:
-            - !Ref KinesisStream
-          Effect: Allow
-          Resource: 
-            Action:
-              - kinesis:PutRecord
+          - Effect: "Allow"
+            Principal:
+              Service: "kinesis.sa-east-1.amazonaws.com"
+              # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
+            Action: 
+              - "sts:AssumeRole"
+              # Ref: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html 
+              # Returns a set of temporary security credentials that you can use to access AWS resources that you might not normally have access to.
+      Policies:
+        - PolicyName: KinesisPutRecordPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - kinesis:PutRecord
+              Effect: Allow
+              Resource:
+                - !GetAtt KinesisStream.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt KinesisStream.Arn }
       RoleName: "KinesisPutRecordRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis." 
