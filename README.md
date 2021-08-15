@@ -51,6 +51,7 @@ Para acessar os notebooks via colab:
 ### Lambda
 
 - [AWS SAM template for a CloudWatch Events application](https://docs.aws.amazon.com/lambda/latest/dg/with-scheduledevents-example-use-app-spec.html)
+- [awsdocs/aws-lambda-developer-guide](https://github.com/awsdocs/aws-lambda-developer-guide/tree/main/sample-apps/blank-python)
 
 
 ### Glue
