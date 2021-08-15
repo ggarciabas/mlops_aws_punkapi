@@ -28,9 +28,8 @@ Resources:
       Environment:
         Variables:
           KinesisStreamName: !Ref KinesisStreamName
-      Polices:
-        # Permite enviar dados para Kinesis
-        - KinesisPutRecordRole
+      # Permite enviar dados para Kinesis
+      Role: KinesisPutRecordRole
   # Cria AWS Kinesis Data Stream  
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
