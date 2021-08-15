@@ -29,8 +29,7 @@ Resources:
         Variables:
           KinesisStreamName: !Ref KinesisStreamName
       # Permite enviar dados para Kinesis
-      Policies: 
-        - !GetAtt KinesisPutRecordRole.Arn
+      Role: !GetAtt KinesisPutRecordRole.Arn
   # Cria AWS Kinesis Data Stream  
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
