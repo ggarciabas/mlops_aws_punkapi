@@ -55,6 +55,13 @@ Para acessar os notebooks via colab:
 - [AWS Glue](https://aws.amazon.com/glue/?did=ft_card&trk=ft_card&whats-new-cards.sort-by=item.additionalFields.postDateTime&whats-new-cards.sort-order=desc)
 - [template](https://gist.github.com/vdparikh/4c5d493fce53b9baf33edb39b17ff864)
 
+### Github action SAM CLI
+> This Action enables you to run AWS SAM CLI commands in order to build, package, and deploy serverless applications as part of your workflow.
+
+- [Setup AWS SAM CLI](https://github.com/marketplace/actions/setup-aws-sam-cli)
+- [Repos](https://github.com/aws-actions/setup-sam)
+- [Using GitHub Actions to deploy serverless applications](https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/)
+
 ## Referências de estudo
 
 - [Batch Data Processing with AWS Kinesis Firehose and S3 | Overview](https://www.youtube.com/watch?v=DPT3swb6zgI)
