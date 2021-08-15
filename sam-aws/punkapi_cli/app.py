@@ -7,6 +7,7 @@
 import requests
 import json
 import boto3
+import os
 
 kinesis_stream = os.environ.get('KinesisStreamName')
 
