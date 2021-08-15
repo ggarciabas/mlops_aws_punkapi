@@ -20,8 +20,8 @@ jobs:
           # São Paulo 
           aws-region: sa-east-1          
       # sam build 
-      - run: sam build --use-container
+      - run: sam build --use-container --template sam-aws-punkapi.yml --base-dir ./sam-aws --build-dir ./sam-aws
       # sam deploy
-      - run: sam deploy --no-fail-on-empty-changeset
+      - run: sam deploy --no-fail-on-empty-changeset --template sam-aws-punkapi.yml
 
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
