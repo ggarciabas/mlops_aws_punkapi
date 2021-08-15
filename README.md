@@ -4,6 +4,7 @@
 [![](https://img.shields.io/badge/serverless-layers?style=for-the-badge&logo=serverless&labelColor=white&color=red&)](https://www.serverless.com/) 
 [![](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&labelColor=white)](https://www.python.org/)
 [![](https://img.shields.io/badge/Colab-Google?style=for-the-badge&labelColor=white&color=orange&logo=googlecolab)](https://colab.research.google.com/)
+<!--[![](https://img.shields.io/badge/VsCode-007ACC?style=for-the-badge&labelColor=white&color=007ACC&logo=vscode)](https://code.visualstudio.com/)-->
 
 
 ## Desafio Punk API
