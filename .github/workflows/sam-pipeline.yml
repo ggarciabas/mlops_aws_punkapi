@@ -20,15 +20,13 @@ jobs:
           # São Paulo 
           aws-region: sa-east-1
       # sam build 
-      - run: sam build --use-container --template ./sam-aws/sam-aws-punkapi.yml --base-dir ./sam-aws --build-dir ./sam-aws
-      # sam deploy
-      # config: https://github.com/aws/aws-sam-cli/issues/2747
-      - run: sam deploy --no-confirm-changeset 
-                        --no-fail-on-empty-changeset 
+      - run: sam build --use-container 
                         --template ./sam-aws/sam-aws-punkapi.yml 
-                        --stack-name punk-api-stack
-                        --s3-bucket github-action-aws
-                        --region sa-east-1
-                        --capabilities CAPABILITY_IAM
+                        --base-dir ./sam-aws 
+                        --build-dir ./sam-aws
+                        --config-file ./sam-aws/samconfig.toml
+      # sam deploy
+      # caminho passa a ser relativo ao container
+      - run: sam deploy --no-fail-on-empty-changeset
 
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
