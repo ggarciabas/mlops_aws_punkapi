@@ -16,14 +16,23 @@ Para acessar os notebooks via colab:
 - [Exploração da API](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/exp_punkapi/notebooks/Explora_API.ipynb)
 
 ## AWS
+ 
+### Serverless Application
 
-### Serverless Application Repository
+#### Model
+> The AWS Serverless Application Model (AWS SAM) is an open-source framework that you can use to build serverless applications on AWS.
+
+#### Repository
 > The AWS Serverless Application Repository is a managed repository for serverless applications. It enables teams, organizations, and individual developers to store and share reusable applications, and easily assemble and deploy serverless architectures in powerful new ways.
 
 - [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
 - [Repository](https://serverlessrepo.aws.amazon.com/applications)
+- [What is SAM?](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html)
+- [AWS SAM template anatomy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html)
 
-### Kinesis Data Firehouse
+### Kinesis 
+
+#### Data Firehouse
 > Kinesis Data Firehose can invoke your Lambda function to transform incoming source data and deliver the transformed data to destinations. You can enable Kinesis Data Firehose data transformation when you create your delivery stream.
 
 > It invokes the specified Lambda function asynchronously with each buffered batch using the AWS Lambda synchronous invocation mode. The transformed data is sent from **Lambda** to Kinesis Data Firehose. Kinesis Data Firehose then sends it to the destination when the specified destination buffering size or buffering interval is reached, whichever happens first.
@@ -34,6 +43,17 @@ Para acessar os notebooks via colab:
 - [Kinesis](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-kinesis.html)
 - [boto Kinesis putRecord](http://boto.cloudhackers.com/en/latest/ref/kinesis.html#boto.kinesis.layer1.KinesisConnection.put_record)
 
+### Lambda
+
+- [AWS SAM template for a CloudWatch Events application](https://docs.aws.amazon.com/lambda/latest/dg/with-scheduledevents-example-use-app-spec.html)
+
+
+### Glue
+
+> AWS Glue is a serverless data integration service that makes it easy to discover, prepare, and combine data for analytics, machine learning, and application development. AWS Glue provides all of the capabilities needed for data integration so that you can start analyzing your data and putting it to use in minutes instead of months.
+
+- [AWS Glue](https://aws.amazon.com/glue/?did=ft_card&trk=ft_card&whats-new-cards.sort-by=item.additionalFields.postDateTime&whats-new-cards.sort-order=desc)
+- [template](https://gist.github.com/vdparikh/4c5d493fce53b9baf33edb39b17ff864)
 
 ## Referências de estudo
 
