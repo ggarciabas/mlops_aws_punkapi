@@ -7,6 +7,8 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    env:
+      SAM_CLI_TELEMETRY: 0
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
