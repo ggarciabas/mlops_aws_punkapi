@@ -37,27 +37,19 @@ def lambda_handler (event, context):
 
     if res.status_code == requests.codes.ok:
         # Recupera dados da requisição
-        try:
-            res_json = res.json()
-            print (res_json[0])
-            encoded_data = str(res_json[0]).encode()
-            print (encoded_data)
-        except:
-            raise Exception("Erro ao processar dados do endpoint.")
+        res_json = res.json()
+        print (res_json[0])
+        encoded_data = str(res_json[0]).encode()
+        print (encoded_data)
 
         # Envia dados para Kinesis
         print ("Envia dados para Kinesis Data Stream.")
-        try:
-            client = boto3.client('kinesis')
-            kinesis_resp = client.put_record(
-                                StreamName=kinesis_stream,
-                                Data=encoded_data,
-                                PartitionKey='1'
-                                )
-            pprint(kinesis_resp)
-        except:
-            raise Exception('Erro ao enviar informações para Kinesis.')
-    else:
-        raise Exception('Erro ao requisitar Punk API.')
+        client = boto3.client('kinesis')
+        kinesis_resp = client.put_record(
+                            StreamName=kinesis_stream,
+                            Data=encoded_data,
+                            PartitionKey='1'
+                            )
+        pprint(kinesis_resp)
     
     return None
