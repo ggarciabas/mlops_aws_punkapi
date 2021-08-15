@@ -23,7 +23,8 @@ jobs:
       - run: sam build --use-container 
                         --template ./sam-aws/sam-aws-punkapi.yml
                         --base-dir ./sam-aws
-                        --region sa-east-1          
+                        --region sa-east-1         
+                        --manifest ./sam-aws/punkapi_cli/requirements.txt 
                         --debug
       # sam deploy
       # caminho passa a ser relativo ao container
