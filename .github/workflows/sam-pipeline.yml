@@ -18,7 +18,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # São Paulo 
-          aws-region: ${{ secrets.AWS_REGION }}     
+          aws-region: sa-east-1
       # sam build 
       - run: sam build --use-container --template ./sam-aws/sam-aws-punkapi.yml --base-dir ./sam-aws --build-dir ./sam-aws
       # sam deploy
@@ -28,7 +28,7 @@ jobs:
                         --template ./sam-aws/sam-aws-punkapi.yml 
                         --stack-name punk-api-stack
                         --s3-bucket github-action-aws
-                        --region ${{ secrets.AWS_REGION }} 
+                        --region sa-east-1
                         --capabilities CAPABILITY_IAM
 
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
