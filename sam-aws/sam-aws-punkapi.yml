@@ -28,6 +28,8 @@ Resources:
       Environment:
         Variables:
           KinesisStreamName: !Ref KinesisStreamName
+      # Permite enviar dados para Kinesis
+      Role: KinesisPutRecordRole
   # Cria AWS Kinesis Data Stream  
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
@@ -35,4 +37,23 @@ Resources:
     Properties:
       Name: !Ref KinesisStreamName
       ShardCount: 1
-  # Ref: https://serverlessland.com/patterns/kinesis-lambda
+    # Ref: https://serverlessland.com/patterns/kinesis-lambda
+  # Cria regra de acesso para adicionar informações ao Kinesis 
+  KinesisPutRecordRole:
+    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Action:
+            - kinesis:PutRecord
+          Effect: Allow
+          Resource:
+            - !Ref KinesisStream
+          Effect: Allow
+          Resource: 
+            Action:
+              - kinesis:PutRecord
+      RoleName: "KinesisPutRecordRole"
+      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis."
