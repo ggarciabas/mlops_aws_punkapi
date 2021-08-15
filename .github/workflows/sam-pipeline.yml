@@ -21,12 +21,14 @@ jobs:
           aws-region: sa-east-1
       # sam build 
       - run: sam build --use-container 
-                        --template ./sam-aws/sam-aws-punkapi.yml 
-                        --base-dir ./sam-aws 
+                        --template ./sam-aws/sam-aws-punkapi.yml
                         --build-dir ./sam-aws
                         --config-file ./sam-aws/samconfig.toml
+                        --debug
       # sam deploy
       # caminho passa a ser relativo ao container
-      - run: sam deploy --no-fail-on-empty-changeset
+      - run: sam deploy --no-fail-on-empty-changeset 
+                        --config-file ./sam-aws/samconfig.toml
+                        --debug
 
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/

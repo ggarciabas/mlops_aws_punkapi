@@ -10,3 +10,6 @@ region = "sa-east-1"
 confirm_changeset = false
 capabilities = "CAPABILITY_IAM"
 tags = "github"
+
+[default.build.parameters]
+region = "sa-east-1"
