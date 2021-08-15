@@ -21,6 +21,7 @@ Para acessar os notebooks via colab:
 > The AWS Serverless Application Repository is a managed repository for serverless applications. It enables teams, organizations, and individual developers to store and share reusable applications, and easily assemble and deploy serverless architectures in powerful new ways.
 
 - [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
+- [Repository](https://serverlessrepo.aws.amazon.com/applications)
 
 ### Kinesis Data Firehouse
 > Kinesis Data Firehose can invoke your Lambda function to transform incoming source data and deliver the transformed data to destinations. You can enable Kinesis Data Firehose data transformation when you create your delivery stream.
@@ -28,6 +29,10 @@ Para acessar os notebooks via colab:
 > It invokes the specified Lambda function asynchronously with each buffered batch using the AWS Lambda synchronous invocation mode. The transformed data is sent from **Lambda** to Kinesis Data Firehose. Kinesis Data Firehose then sends it to the destination when the specified destination buffering size or buffering interval is reached, whichever happens first.
 
 - [Amazon Kinesis Data Firehose Data Transformation](https://docs.aws.amazon.com/firehose/latest/dev/data-transformation.html)
+- [Writing to Kinesis Data Firehose Using Kinesis Data Streams](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-kinesis-streams.html)
+- [Kinesis Data Streams Quotas and Limits](https://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html)
+- [Kinesis](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-kinesis.html)
+- [boto Kinesis putRecord](http://boto.cloudhackers.com/en/latest/ref/kinesis.html#boto.kinesis.layer1.KinesisConnection.put_record)
 
 
 ## Referências de estudo
@@ -44,5 +49,7 @@ Para acessar os notebooks via colab:
 - [Working with stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html)
 - [Sessions With SAM (S1E4): Building a Kinesis Firehose application for ingesting website access logs](https://www.youtube.com/watch?v=jdTBtaxs0hA)
 - [Amazon Kinesis Data Firehose Data Transformation](https://docs.aws.amazon.com/firehose/latest/dev/data-transformation.html)
+- [Writing to Kinesis Data Firehose Using Kinesis Data Streams](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-kinesis-streams.html)
+- [Writing to Kinesis stream using AWS Lambda Function](https://stackoverflow.com/questions/33824904/writing-to-kinesis-stream-using-aws-lambda-function)
 
 <!-- Icons: https://simpleicons.org/ Shields: https://img.shields.io/badge-->
