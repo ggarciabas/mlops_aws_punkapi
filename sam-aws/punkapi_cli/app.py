@@ -39,10 +39,12 @@ def lambda_handler (event, context):
     if res.status_code == requests.codes.ok:
         # Recupera dados da requisição
         res_json = res.json()
-        print (res_json[0])
+        print (f" JSON: {res_json[0]}")
+        res_json_dumps = json.dumps(res_json[0]) # mantém aspas duplas
+        print (f"JSON dumps: {res_json_dumps}")
         encoded_data = str(res_json[0]).encode()
-        print (encoded_data)
-        print (sys.getsizeof(encoded_data))
+        print (f"Encoded data: {encoded_data}")
+        print (f"Size: {sys.getsizeof(encoded_data)}")
 
         # Envia dados para Kinesis
         print (f"Envia dados para Kinesis Data Stream: {kinesis_stream}")
@@ -52,6 +54,6 @@ def lambda_handler (event, context):
                             Data=encoded_data,
                             PartitionKey='partitionKey-1'
                             )
-        print(kinesis_resp)
+        print(f"Kinesis resp: {kinesis_resp}")
     
     return None
