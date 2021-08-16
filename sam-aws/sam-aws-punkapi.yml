@@ -114,7 +114,7 @@ Resources:
                 - "logs:PutLogEvents"
               Effect: Allow
               Resource: 
-                - "arn:aws:logs:*:*:*""
+                - "arn:aws:logs:*:*:*"
               # ref: https://stackoverflow.com/questions/37382889/cant-get-aws-lambda-function-to-log-text-output-to-cloudwatch    
       RoleName: "LambdaCleanRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o log."   
