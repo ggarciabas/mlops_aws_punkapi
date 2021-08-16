@@ -3,7 +3,7 @@ import base64
 def lambda_handler(event, context):
     output = []
 
-    print (f"Leitura dos registros: {len(event['records'])}"):
+    print (f"Leitura dos registros: {len(event['records'])}")
     for record in event['records']:
         print(record['recordId'])
         payload = base64.b64decode(record['data'])
