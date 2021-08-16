@@ -12,8 +12,11 @@ def lambda_handler(event, context):
         payload = base64.b64decode(record['data'])
 
         # Recupera campos específicos para modelo
-        data_str = payload.decode(encoding='utf-8').replace("'", '"')
+        print (f"Payload: {payload}")
+        data_str = payload.replace("'", '"')
+        print (f"Data string: {data_str}")
         data_dict = json.loads(data_str)
+        print (f"Data dict: {data_dict}")
         final_data  = { k: data_dict[k] for k in filter_keys }
         print (f"Chaves finais: {final_data.keys()}")
 
