@@ -155,10 +155,11 @@ Resources:
             Version: '2012-10-17'
             Statement:
               Action:
-                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
-                - kinesis:GetRecords
-                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
-                - kinesis:DescribeStream
+                - kinesis:*
+                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
+                # - kinesis:GetRecords
+                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
+                # - kinesis:DescribeStream
                 # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html                
               Effect: Allow
               Resource:
@@ -182,5 +183,14 @@ Resources:
                 - !Sub
                   - ${Arn}/*
                   - { Arn: !GetAtt CleanedDataBucket.Arn }
+        - PolicyName: LambdaInvokePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - lambda:InvokeFunction
+              Effect: Allow
+              Resource:
+                - !GetAtt PunkAPICleanLambda.Arn
       RoleName: FirehoseRole
       Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3." 
