@@ -61,6 +61,7 @@ Resources:
             Statement:
               Action:
                 - kinesis:PutRecord
+                # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html
               Effect: Allow
               Resource:
                 - !GetAtt KinesisStream.Arn
@@ -69,14 +70,79 @@ Resources:
                   - { Arn: !GetAtt KinesisStream.Arn }
       RoleName: "KinesisPutRecordRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis." 
-  ## Cria repositório para dados Raw
+  # Cria repositório para dados Raw
   RawDataBucket:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapiraw
-  ## Cria repositório para dados cleaned
+  # Cria repositório para dados cleaned
   CleanedDataBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapicleaned
+  # Cria Firehouse para ingerir dados no S3
+  FirehouseStream:
+    # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesisfirehose-deliverystream.html
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: PunkAPIFirehouse
+      DeliveryStreamType: KinesisStreamAsSource
+      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-kinesisstreamsourceconfiguration.html
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !GetAtt KinesisStream.Arn
+        RoleARN: !GetAtt FirehouseRole.Arn
+      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
+      S3DestinationConfiguration:
+        BucketArn: !GetAtt RawDataBucket.Arn
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 1
+        RoleARN: !GetAtt FirehouseRole.Arn
+      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
+      #ExtendedS3DestinationConfiguration
+  # Cria regra de acesso do Firehouse para Kinesis Stream
+  FirehouseRole:
+    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "firehouse.amazonaws.com"
+              # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
+            Action: 
+              - "sts:AssumeRole"
+              # Ref: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html 
+              # Returns a set of temporary security credentials that you can use to access AWS resources that you might not normally have access to.
+      Policies:
+        - PolicyName: KinesisSourceStreamPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
+                - kinesis:GetRecords
+                # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html                
+              Effect: Allow
+              Resource:
+                - !GetAtt KinesisStream.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt KinesisStream.Arn }
+        - PolicyName: S3WritePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - s3:PutObject
+              Effect: Allow
+              Resource:
+                - !GetAtt RawDataBucket.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt RawDataBucket.Arn }
+      RoleName: FirehouseRole
+      Description: "Cria uma regra para permitir o firehouse acessar dados do Kinesis e escrever no S3." 
