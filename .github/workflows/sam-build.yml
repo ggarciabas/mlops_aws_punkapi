@@ -24,7 +24,7 @@ jobs:
                         --template ./sam-aws/sam-aws-punkapi.yml
                         --base-dir ./sam-aws
                         --region sa-east-1
-                        --manifest ./sam-aws/punkapi_cli/requirements.txt        
+                        --manifest ./sam-aws/requirements.txt        
                         --debug
 ## Referência: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
 ### aws cloudformation delete-stack --stack-name <<stack-name>>
