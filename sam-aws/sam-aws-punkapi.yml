@@ -4,9 +4,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Configura recursos AWS para desafio PunkAPI
 
+# Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
+Parameters:
+  KinesisStreamName:
+    Type: String
+    Default: "PunkAPIKinesisStream"
+    Description: "Define o nome para Kinesis Data Stream."
+
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
+  # Função Lambda para consumir API
   PunkAPICliLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Type: AWS::Serverless::Function
@@ -17,3 +25,47 @@ Resources:
       FunctionName: PunkAPICliLambdaFunction
       VersionDescription: "0.01"
       Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
+      Environment:
+        Variables:
+          KinesisStreamName: !Ref KinesisStreamName
+      # Permite enviar dados para Kinesis
+      Role: !GetAtt LambdaToKinesisPutRecordRole.Arn
+  # Cria AWS Kinesis Data Stream  
+  KinesisStream:
+    # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: !Ref KinesisStreamName
+      ShardCount: 1
+    # Ref: https://serverlessland.com/patterns/kinesis-lambda
+  # Cria uma regra de acesso para Lambda escrever no Kinesis
+  LambdaToKinesisPutRecordRole:
+    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "lambda.amazonaws.com"
+              # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
+            Action: 
+              - "sts:AssumeRole"
+              # Ref: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html 
+              # Returns a set of temporary security credentials that you can use to access AWS resources that you might not normally have access to.
+      Policies:
+        - PolicyName: KinesisPutRecordPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - kinesis:PutRecord
+              Effect: Allow
+              Resource:
+                - !GetAtt KinesisStream.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt KinesisStream.Arn }
+      RoleName: "KinesisPutRecordRole"
+      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis." 
