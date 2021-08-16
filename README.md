@@ -71,6 +71,13 @@ Para acessar os notebooks via colab:
 - [IAM roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html)
 - [AWS::IAM::Role](https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html)
 
+#### Simple Storage Service
+>  Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, data availability, security, and performance.
+
+- [Simple Storage Service](https://aws.amazon.com/s3/)
+- [Bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)
+- [AWS::S3::Bucket](https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html#cfn-s3-bucket-name)
+
 ### Github action SAM CLI
 > This Action enables you to run AWS SAM CLI commands in order to build, package, and deploy serverless applications as part of your workflow.
 
