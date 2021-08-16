@@ -51,13 +51,19 @@ Resources:
               Service: "lambda.amazonaws.com"
               # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
             Action: 
-              - "logs:CreateLogGroup"
-              - "logs:CreateLogStream"
-              - "logs:PutLogEvents"
               - "sts:AssumeRole"
               # Ref: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html 
               # Returns a set of temporary security credentials that you can use to access AWS resources that you might not normally have access to.
       Policies:
+        - PolicyName: LogPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Effect: Allow
         - PolicyName: KinesisPutRecordPolicy
           PolicyDocument:
             Version: '2012-10-17'
@@ -96,9 +102,17 @@ Resources:
               Service: "lambda.amazonaws.com"
               # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
             Action: 
-              - "logs:CreateLogGroup"
-              - "logs:CreateLogStream"
-              - "logs:PutLogEvents"
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: LogPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Effect: Allow
               # ref: https://stackoverflow.com/questions/37382889/cant-get-aws-lambda-function-to-log-text-output-to-cloudwatch    
       RoleName: "LambdaCleanRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o log."   
