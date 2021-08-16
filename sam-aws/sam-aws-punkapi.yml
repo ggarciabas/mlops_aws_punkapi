@@ -74,9 +74,9 @@ Resources:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: raw
+      BucketName: PunkAPIRaw
   ## Cria repositório para dados cleaned
   CleanedDataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: cleaned
+      BucketName: PunkAPICleaned
