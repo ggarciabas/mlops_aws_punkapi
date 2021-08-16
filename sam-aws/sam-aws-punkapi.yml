@@ -69,3 +69,14 @@ Resources:
                   - { Arn: !GetAtt KinesisStream.Arn }
       RoleName: "KinesisPutRecordRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis." 
+  ## Cria repositório para dados Raw
+  RawDataBucket:
+    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: raw
+  ## Cria repositório para dados cleaned
+  CleanedDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: cleaned
