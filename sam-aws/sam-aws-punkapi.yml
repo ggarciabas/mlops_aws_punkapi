@@ -28,8 +28,8 @@ Resources:
       Environment:
         Variables:
           KinesisStreamName: !Ref KinesisStreamName
-      # Permite enviar dados para Kinesis
-      Role: !GetAtt LambdaToKinesisPutRecordRole.Arn
+      # Permite enviar dados para Kinesis e escrever no log
+      Role: !GetAtt LambdaPinkApiCliRole.Arn
   # Cria AWS Kinesis Data Stream  
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
@@ -38,8 +38,8 @@ Resources:
       Name: !Ref KinesisStreamName
       ShardCount: 1
     # Ref: https://serverlessland.com/patterns/kinesis-lambda
-  # Cria uma regra de acesso para Lambda escrever no Kinesis
-  LambdaToKinesisPutRecordRole:
+  # Cria uma regra de acesso para Lambda escrever no Kinesis e no log
+  LambdaPinkApiCliRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: AWS::IAM::Role
     Properties: 
@@ -51,6 +51,9 @@ Resources:
               Service: "lambda.amazonaws.com"
               # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
             Action: 
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
               - "sts:AssumeRole"
               # Ref: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html 
               # Returns a set of temporary security credentials that you can use to access AWS resources that you might not normally have access to.
@@ -68,8 +71,8 @@ Resources:
                 - !Sub
                   - ${Arn}/*
                   - { Arn: !GetAtt KinesisStream.Arn }
-      RoleName: "KinesisPutRecordRole"
-      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis." 
+      RoleName: "LambdaPinkApiCliRole"
+      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."   
   # Cria repositório para dados Raw
   RawDataBucket:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
@@ -81,6 +84,24 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapicleaned
+  # Cria regra para os lambdas poderem inserir dados no log
+  LambdaCleanRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "lambda.amazonaws.com"
+              # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
+            Action: 
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+              # ref: https://stackoverflow.com/questions/37382889/cant-get-aws-lambda-function-to-log-text-output-to-cloudwatch    
+      RoleName: "LambdaCleanRole"
+      Description: "Cria uma regra para permitir a função lambda a enviar dados para o log."   
   # Função Lambda para resgatar campos de interesse (clean)
   PunkAPICleanLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
@@ -92,6 +113,7 @@ Resources:
       FunctionName: PunkAPICleanLambdaFunction
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
+      Role: !GetAtt LambdaCleanRole.Arn
   # Cria Firehose para ingerir dados no S3
   FirehoseStream:
     # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesisfirehose-deliverystream.html
@@ -118,6 +140,7 @@ Resources:
         BufferingHints:
           IntervalInSeconds: 120
           SizeInMBs: 10
+        # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
           Processors:
