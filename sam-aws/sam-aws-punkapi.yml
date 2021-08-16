@@ -105,16 +105,16 @@ Resources:
         CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
-          IntervalInSeconds: 60
-          SizeInMBs: 1
+          IntervalInSeconds: 120
+          SizeInMBs: 10
         S3BackupMode: Enabled
         S3BackupConfiguration:
           BucketARN: !GetAtt RawDataBucket.Arn
           CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
-            IntervalInSeconds: 60
-            SizeInMBs: 1
+            IntervalInSeconds: 120
+            SizeInMBs: 10
   # Cria regra de acesso do Firehose para Kinesis Stream
   FirehoseRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
