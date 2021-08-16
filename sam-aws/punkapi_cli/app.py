@@ -8,6 +8,7 @@ import requests
 import json
 import boto3
 import os
+import sys
 
 kinesis_stream = os.environ.get('KinesisStreamName')
 
@@ -41,6 +42,7 @@ def lambda_handler (event, context):
         print (res_json[0])
         encoded_data = str(res_json[0]).encode()
         print (encoded_data)
+        print (sys.getsizeof(encoded_data))
 
         # Envia dados para Kinesis
         print (f"Envia dados para Kinesis Data Stream: {kinesis_stream}")
@@ -48,7 +50,7 @@ def lambda_handler (event, context):
         kinesis_resp = client.put_record(
                             StreamName=kinesis_stream,
                             Data=encoded_data,
-                            PartitionKey='1'
+                            PartitionKey='partitionKey-1'
                             )
         print(kinesis_resp)
     
