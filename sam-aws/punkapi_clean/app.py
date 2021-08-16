@@ -13,7 +13,7 @@ def lambda_handler(event, context):
 
         # Recupera campos específicos para modelo
         print (f"Payload: {payload}")
-        data_str = payload.replace("'", '"')
+        data_str = payload.decode().replace("'", '"')
         print (f"Data string: {data_str}")
         data_dict = json.loads(data_str)
         print (f"Data dict: {data_dict}")
