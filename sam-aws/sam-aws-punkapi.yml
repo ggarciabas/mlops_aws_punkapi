@@ -14,6 +14,17 @@ Parameters:
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
+  # # Cria grupo para escrever no log
+  # LambdaLogGroup:
+  #   Type: AWS::Logs::LogGroup
+  #   Properties: 
+  #     LogGroupName: "LambdaLogGroup"
+  # # Cria cloudwatch para screver no log
+  # CloudWatchLog:
+  #   Type: CloudWatchLogs
+  #   Properties:
+  #     LogGroupName: "LambdaLogGroup"
+  #     FilterPattern: "*"
   # Função Lambda para consumir API
   PunkAPICliLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
@@ -64,6 +75,8 @@ Resources:
                 - "logs:CreateLogStream"
                 - "logs:PutLogEvents"
               Effect: Allow
+              Resource: 
+                - "arn:aws:logs:*:*:*"
         - PolicyName: KinesisPutRecordPolicy
           PolicyDocument:
             Version: '2012-10-17'
