@@ -13,7 +13,7 @@ def lambda_handler(event, context):
 
         # Recupera campos específicos para modelo
         data_str = payload.decode(encoding='utf-8').replace("'", '"')
-        data_dict = json.loads(data)
+        data_dict = json.loads(data_str)
         final_data  = { k: data_dict[k] for k in filter_keys }
         print (f"Chaves finais: {final_data.keys()}")
 
