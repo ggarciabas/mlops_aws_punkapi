@@ -16,15 +16,18 @@ Resources:
   # LogicalID
   # # Cria grupo para escrever no log
   # LambdaLogGroup:
+  #   # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html
   #   Type: AWS::Logs::LogGroup
   #   Properties: 
   #     LogGroupName: "LambdaLogGroup"
   # # Cria cloudwatch para screver no log
   # CloudWatchLog:
+  #   # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-cloudwatchlogs.html
   #   Type: CloudWatchLogs
   #   Properties:
   #     LogGroupName: "LambdaLogGroup"
   #     FilterPattern: "*"
+
   # Função Lambda para consumir API
   PunkAPICliLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
@@ -41,6 +44,7 @@ Resources:
           KinesisStreamName: !Ref KinesisStreamName
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
+
   # Cria AWS Kinesis Data Stream  
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
@@ -49,6 +53,7 @@ Resources:
       Name: !Ref KinesisStreamName
       ShardCount: 1
     # Ref: https://serverlessland.com/patterns/kinesis-lambda
+
   # Cria uma regra de acesso para Lambda escrever no Kinesis e no log
   LambdaPinkApiCliRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
@@ -92,17 +97,20 @@ Resources:
                   - { Arn: !GetAtt KinesisStream.Arn }
       RoleName: "LambdaPinkApiCliRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."   
+  
   # Cria repositório para dados Raw
   RawDataBucket:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapiraw
+  
   # Cria repositório para dados cleaned
   CleanedDataBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapicleaned
+  
   # Cria regra para os lambdas poderem inserir dados no log
   LambdaCleanRole:
     Type: AWS::IAM::Role
@@ -131,6 +139,7 @@ Resources:
               # ref: https://stackoverflow.com/questions/37382889/cant-get-aws-lambda-function-to-log-text-output-to-cloudwatch    
       RoleName: "LambdaCleanRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o log."   
+  
   # Função Lambda para resgatar campos de interesse (clean)
   PunkAPICleanLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
@@ -143,6 +152,7 @@ Resources:
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
+  
   # Cria Firehose para ingerir dados no S3
   FirehoseStream:
     # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesisfirehose-deliverystream.html
@@ -185,6 +195,7 @@ Resources:
           BufferingHints:
             IntervalInSeconds: 120
             SizeInMBs: 10  
+  
   # Cria regra de acesso do Firehose para Kinesis Stream
   FirehoseRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
