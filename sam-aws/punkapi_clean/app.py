@@ -1,4 +1,5 @@
 import base64
+import json
 
 def lambda_handler(event, context):
     output = []
@@ -9,6 +10,17 @@ def lambda_handler(event, context):
         payload = base64.b64decode(record['data'])
 
         print (payload)
+        try:
+            print (type(payload)))
+        except:
+            print ("Falha type")
+
+        try:
+            json_dp = json.dump(payload)
+            print (json_dp)
+            print (type(json))
+        except:
+            print ("Falha json")
 
         output_record = {
             'recordId': record['recordId'],
