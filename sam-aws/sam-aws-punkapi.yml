@@ -81,6 +81,17 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapicleaned
+  # Função Lambda para resgatar campos de interesse (clean)
+  PunkAPICleanLambda:
+    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: punkapi_clean/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      FunctionName: PunkAPICleanLambdaFunction
+      VersionDescription: "0.01"
+      Description: "Função lambda que resgata os campos de interesse."
   # Cria Firehose para ingerir dados no S3
   FirehoseStream:
     # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesisfirehose-deliverystream.html
@@ -107,6 +118,13 @@ Resources:
         BufferingHints:
           IntervalInSeconds: 120
           SizeInMBs: 10
+        ProcessingConfiguration:
+          Enabled: true
+          Processors:
+            - Type: Lambda
+              Parameters:
+                - ParameterName: LambdaArn
+                  ParameterValue: !GetAtt PunkAPICleanLambda.Arn
         S3BackupMode: Enabled
         S3BackupConfiguration:
           BucketARN: !GetAtt RawDataBucket.Arn
@@ -114,7 +132,7 @@ Resources:
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
             IntervalInSeconds: 120
-            SizeInMBs: 10
+            SizeInMBs: 10  
   # Cria regra de acesso do Firehose para Kinesis Stream
   FirehoseRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
