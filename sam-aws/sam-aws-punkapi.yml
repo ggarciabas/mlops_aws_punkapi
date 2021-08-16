@@ -97,7 +97,7 @@ Resources:
         BucketArn: !GetAtt RawDataBucket.Arn
         BufferingHints:
           IntervalInSeconds: 60
-          SizeInMBs: 1
+          SizeInMBs: 3
         RoleARN: !GetAtt FirehoseRole.Arn
       # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
       #ExtendedS3DestinationConfiguration
