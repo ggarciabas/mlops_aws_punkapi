@@ -54,6 +54,8 @@ Para acessar os notebooks via colab:
 - [Kinesis](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-kinesis.html)
 - [boto Kinesis putRecord](http://boto.cloudhackers.com/en/latest/ref/kinesis.html#boto.kinesis.layer1.KinesisConnection.put_record)
 - [Controlling Access to Amazon Kinesis Data Streams Resources Using IAM](https://docs.aws.amazon.com/streams/latest/dev/controlling-access.html)
+- [Amazon Kinesis Data Firehose Data Transformation](https://docs.aws.amazon.com/firehose/latest/dev/data-transformation.html)
+- [Monitoring Kinesis Data Firehose Using CloudWatch Logs](https://docs.aws.amazon.com/firehose/latest/dev/monitoring-with-cloudwatch-logs.html)
 
 ### Lambda
 
@@ -106,5 +108,6 @@ Para acessar os notebooks via colab:
 - [Writing to Kinesis Data Firehose Using Kinesis Data Streams](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-kinesis-streams.html)
 - [Writing to Kinesis stream using AWS Lambda Function](https://stackoverflow.com/questions/33824904/writing-to-kinesis-stream-using-aws-lambda-function)
 - [How do I give permissions to my Lambda functions by using policies and roles in AWS SAM templates?](https://aws.amazon.com/premiumsupport/knowledge-center/lambda-sam-template-permissions/)
+- [SVS317-R Serverless stream processing pipeline best practices](https://d1.awsstatic.com/events/reinvent/2019/REPEAT_1_Serverless_stream_processing_pipeline_best_practices_SVS317-R1.pdf)
 
 <!-- Icons: https://simpleicons.org/ Shields: https://img.shields.io/badge-->
