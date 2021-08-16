@@ -42,7 +42,7 @@ def lambda_handler (event, context):
         print (f" JSON: {res_json[0]}")
         res_json_dumps = json.dumps(res_json[0]) # mantém aspas duplas
         print (f"JSON dumps: {res_json_dumps}")
-        encoded_data = str(res_json[0]).encode()
+        encoded_data = str(res_json_dumps).encode()
         print (f"Encoded data: {encoded_data}")
         print (f"Size: {sys.getsizeof(encoded_data)}")
 
