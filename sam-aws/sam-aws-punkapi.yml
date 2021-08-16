@@ -93,14 +93,28 @@ Resources:
         KinesisStreamARN: !GetAtt KinesisStream.Arn
         RoleARN: !GetAtt FirehoseRole.Arn
       # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
-      S3DestinationConfiguration:
-        BucketArn: !GetAtt RawDataBucket.Arn
+      # S3DestinationConfiguration:
+      #   BucketArn: !GetAtt RawDataBucket.Arn
+      #   BufferingHints:
+      #     IntervalInSeconds: 60
+      #     SizeInMBs: 3
+      #   RoleARN: !GetAtt FirehoseRole.Arn
+      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
+      ExtendedS3DestinationConfiguration:
+        BucketARN: !GetAtt CleanedDataBucket.Arn
+        CompressionFormat: GZIP
+        RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
           IntervalInSeconds: 60
-          SizeInMBs: 3
-        RoleARN: !GetAtt FirehoseRole.Arn
-      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
-      #ExtendedS3DestinationConfiguration
+          SizeInMBs: 1
+        S3BackupMode: Enabled
+        S3BackupConfiguration:
+          BucketARN: !GetAtt RawDataBucket.Arn
+          CompressionFormat: GZIP
+          RoleARN: !GetAtt FirehoseRole.Arn
+          BufferingHints:
+            IntervalInSeconds: 60
+            SizeInMBs: 1
   # Cria regra de acesso do Firehose para Kinesis Stream
   FirehoseRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
@@ -146,5 +160,9 @@ Resources:
                 - !Sub
                   - ${Arn}/*
                   - { Arn: !GetAtt RawDataBucket.Arn }
+                - !GetAtt CleanedDataBucket.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt CleanedDataBucket.Arn }
       RoleName: FirehoseRole
       Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3." 
