@@ -256,7 +256,7 @@ Resources:
       # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
       ExtendedS3DestinationConfiguration:
         BucketARN: !GetAtt CleanedDataBucket.Arn
-        # CompressionFormat: GZIP
+        CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
           IntervalInSeconds: 120
@@ -272,7 +272,7 @@ Resources:
         S3BackupMode: Enabled
         S3BackupConfiguration:
           BucketARN: !GetAtt RawDataBucket.Arn
-          # CompressionFormat: GZIP
+          CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
             IntervalInSeconds: 120
@@ -281,13 +281,13 @@ Resources:
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
   ########################################################################
-  TableCleanGlue:
+  DatabaseCleanGlue:
     # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-glue-database-databaseinput.html
     Type: AWS::Glue::Database
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
-        Name: punkcleantable
+        Name: punkcleandb
         Description: "Banco com informações de metadados identificados pelo crawler."
 
   ########################################################################
@@ -331,6 +331,18 @@ Resources:
                 - !Sub
                   - ${Arn}/*
                   - { Arn: !GetAtt CleanedDataBucket.Arn }
+        - PolicyName: GluePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - glue:*
+              Effect: Allow
+              Resource:
+                - !GetAtt DatabaseCleanGlue.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt DatabaseCleanGlue.Arn }
 
   ########################################################################
   # Cria Crawler para identificar schema dos dados limpos 
@@ -343,12 +355,13 @@ Resources:
       Name: CrawlerCleanGlue
       Description: "Permite identificar o schema dos dados limpos."
       Role: !GetAtt CrawlerRole.Arn
-      DatabaseName: !Ref TableCleanGlue
+      DatabaseName: !Ref DatabaseCleanGlue
       Targets: 
         S3Targets:
           - Path: !Ref CleanedDataBucket
+          - Exclusions: "*failed"
       RecrawlPolicy: 
-        RecrawlBehavior: "CRAWL_NEW_FOLDERS_ONLY"
+        RecrawlBehavior: "CRAWL_EVERYTHING"
       SchemaChangePolicy:
         UpdateBehavior: "LOG"
         DeleteBehavior: "LOG"
