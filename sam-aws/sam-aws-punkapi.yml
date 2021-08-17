@@ -112,6 +112,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapiraw
+      AccessControl: BucketOwnerFullControl
   
   ########################################################################
   # Cria repositório para dados cleaned
@@ -120,6 +121,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapicleaned
+      AccessControl: BucketOwnerFullControl
   
   ########################################################################
   # Cria regra para os lambdas poderem inserir dados no log
@@ -345,7 +347,8 @@ Resources:
       Targets: 
         S3Targets:
           - Path: !Ref CleanedDataBucket
-      RecrawlPolicy: "CRAWL_NEW_FOLDERS_ONLY"
+      RecrawlPolicy: 
+        RecrawlBehavior: "CRAWL_NEW_FOLDERS_ONLY"
       SchemaChangePolicy:
         UpdateBehavior: "UPDATE_IN_DATABASE"
         DeleteBehavior: "LOG"
