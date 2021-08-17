@@ -52,6 +52,8 @@
 - [AWS Glue](https://aws.amazon.com/glue/?did=ft_card&trk=ft_card&whats-new-cards.sort-by=item.additionalFields.postDateTime&whats-new-cards.sort-order=desc)
 - [template](https://gist.github.com/vdparikh/4c5d493fce53b9baf33edb39b17ff864)
 - [What is Glue?](https://www.dremio.com/data-lake/aws-glue/)
+- [AWS Glue resource type reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Glue.html)
+- [Defining Tables in the AWS Glue Data Catalog](https://docs.aws.amazon.com/glue/latest/dg/tables-described.html)
 
 #### Identity Access Management Roles
 > An IAM role is an IAM identity that you can create in your account that has specific permissions. An IAM role is similar to an IAM user, in that it is an AWS identity with permission policies that determine what the identity can and cannot do in AWS. However, instead of being uniquely associated with one person, a role is intended to be assumable by anyone who needs it. Also, a role does not have standard long-term credentials such as a password or access keys associated with it. Instead, when you assume a role, it provides you with temporary security credentials for your role session.
