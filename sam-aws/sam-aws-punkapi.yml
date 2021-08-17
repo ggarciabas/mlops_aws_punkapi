@@ -170,68 +170,68 @@ Resources:
       Role: !GetAtt LambdaCleanRole.Arn
   
 ########################################################################
-  # Cria regra de acesso do Firehose para Kinesis Stream
-  ########################################################################
-  FirehoseRole:
-    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
-    Type: AWS::IAM::Role
-    Properties: 
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Service: "firehose.amazonaws.com"
-              # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
-            Action: 
-              - "sts:AssumeRole"
-              # Ref: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html 
-              # Returns a set of temporary security credentials that you can use to access AWS resources that you might not normally have access to.
-      Policies:
-        - PolicyName: KinesisSourceStreamPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              Action:
-                - kinesis:*
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
-                # - kinesis:GetRecords
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
-                # - kinesis:DescribeStream
-                # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html                
-              Effect: Allow
-              Resource:
-                - !GetAtt KinesisStream.Arn
-                - !Sub
-                  - ${Arn}/*
-                  - { Arn: !GetAtt KinesisStream.Arn }
-        - PolicyName: S3WritePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              Action:
-                - s3:PutObject
-              Effect: Allow
-              Resource:
-                - !GetAtt RawDataBucket.Arn
-                - !Sub
-                  - ${Arn}/*
-                  - { Arn: !GetAtt RawDataBucket.Arn }
-                - !GetAtt CleanedDataBucket.Arn
-                - !Sub
-                  - ${Arn}/*
-                  - { Arn: !GetAtt CleanedDataBucket.Arn }
-        - PolicyName: LambdaInvokePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              Action:
-                - lambda:InvokeFunction
-              Effect: Allow
-              Resource:
-                - !GetAtt PunkAPICleanLambda.Arn
-      RoleName: FirehoseRole
-      Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3."
+# Cria regra de acesso do Firehose para Kinesis Stream
+########################################################################
+FirehoseRole:
+  # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+  Type: AWS::IAM::Role
+  Properties: 
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: "Allow"
+          Principal:
+            Service: "firehose.amazonaws.com"
+            # Link: https://docs.aws.amazon.com/general/latest/gr/ak.html
+          Action: 
+            - "sts:AssumeRole"
+            # Ref: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html 
+            # Returns a set of temporary security credentials that you can use to access AWS resources that you might not normally have access to.
+    Policies:
+      - PolicyName: KinesisSourceStreamPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            Action:
+              - kinesis:*
+              # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
+              # - kinesis:GetRecords
+              # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
+              # - kinesis:DescribeStream
+              # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html                
+            Effect: Allow
+            Resource:
+              - !GetAtt KinesisStream.Arn
+              - !Sub
+                - ${Arn}/*
+                - { Arn: !GetAtt KinesisStream.Arn }
+      - PolicyName: S3WritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            Action:
+              - s3:PutObject
+            Effect: Allow
+            Resource:
+              - !GetAtt RawDataBucket.Arn
+              - !Sub
+                - ${Arn}/*
+                - { Arn: !GetAtt RawDataBucket.Arn }
+              - !GetAtt CleanedDataBucket.Arn
+              - !Sub
+                - ${Arn}/*
+                - { Arn: !GetAtt CleanedDataBucket.Arn }
+      - PolicyName: LambdaInvokePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              - !GetAtt PunkAPICleanLambda.Arn
+    RoleName: FirehoseRole
+    Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3."
 
   ########################################################################
   # Cria Firehose para ingerir dados no S3
