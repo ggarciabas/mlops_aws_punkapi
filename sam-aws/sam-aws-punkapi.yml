@@ -281,13 +281,13 @@ Resources:
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
   ########################################################################
-  TableCleanGlue:
+  DatabaseCleanGlue:
     # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-glue-database-databaseinput.html
     Type: AWS::Glue::Database
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
-        Name: punkcleantable
+        Name: punkcleandb
         Description: "Banco com informações de metadados identificados pelo crawler."
 
   ########################################################################
@@ -343,7 +343,7 @@ Resources:
       Name: CrawlerCleanGlue
       Description: "Permite identificar o schema dos dados limpos."
       Role: !GetAtt CrawlerRole.Arn
-      DatabaseName: !Ref TableCleanGlue
+      DatabaseName: !Ref DatabaseCleanGlue
       Targets: 
         S3Targets:
           - Path: !Ref CleanedDataBucket
