@@ -112,6 +112,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapiraw
+      AccessControl: BucketOwnerFullControl
   
   ########################################################################
   # Cria repositório para dados cleaned
@@ -120,6 +121,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapicleaned
+      AccessControl: BucketOwnerFullControl
   
   ########################################################################
   # Cria regra para os lambdas poderem inserir dados no log
