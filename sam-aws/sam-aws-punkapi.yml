@@ -338,7 +338,7 @@ Resources:
                 - glue:*
               Effect: Allow
               Resource:
-                - !Ref DatabaseCleanGlue
+                - "arn:aws:glue:*:*:*"
 
   ########################################################################
   # Cria Crawler para identificar schema dos dados limpos 
