@@ -331,6 +331,18 @@ Resources:
                 - !Sub
                   - ${Arn}/*
                   - { Arn: !GetAtt CleanedDataBucket.Arn }
+        - PolicyName: GluePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - glue:*
+              Effect: Allow
+              Resource:
+                - !GetAtt DatabaseCleanGlue.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt DatabaseCleanGlue.Arn }
 
   ########################################################################
   # Cria Crawler para identificar schema dos dados limpos 
@@ -347,6 +359,7 @@ Resources:
       Targets: 
         S3Targets:
           - Path: !Ref CleanedDataBucket
+          - Exclusions: "*failed"
       RecrawlPolicy: 
         RecrawlBehavior: "CRAWL_EVERYTHING"
       SchemaChangePolicy:
