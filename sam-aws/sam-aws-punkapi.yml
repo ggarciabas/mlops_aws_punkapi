@@ -355,7 +355,8 @@ Resources:
       Targets: 
         S3Targets:
           - Path: !Ref CleanedDataBucket
-          - Exclusions: "*failed"
+          - Exclusions: 
+            - "*failed"
       RecrawlPolicy: 
         RecrawlBehavior: "CRAWL_EVERYTHING"
       SchemaChangePolicy:
