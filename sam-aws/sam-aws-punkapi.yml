@@ -318,19 +318,8 @@ Resources:
               Effect: Allow
               Resource: 
                 - "arn:aws:logs:*:*:*"
-        - PolicyName: S3ReadPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              Action:
-                - s3:GetObject
-                - s3:ListBucket
-              Effect: Allow
-              Resource:
-                - !GetAtt CleanedDataBucket.Arn
-                - !Sub
-                  - ${Arn}/*
-                  - { Arn: !GetAtt CleanedDataBucket.Arn }
+        - S3FullAccessPolicy:
+            BucketName: !Ref CleanedDataBucket
         - PolicyName: GluePolicy
           PolicyDocument:
             Version: '2012-10-17'
@@ -339,10 +328,7 @@ Resources:
                 - glue:*
               Effect: Allow
               Resource:
-                - !GetAtt DatabaseCleanGlue.Arn
-                - !Sub
-                  - ${Arn}/*
-                  - { Arn: !GetAtt DatabaseCleanGlue.Arn }
+                - !Ref DatabaseCleanGlue
 
   ########################################################################
   # Cria Crawler para identificar schema dos dados limpos 
