@@ -28,7 +28,9 @@ Resources:
   #     LogGroupName: "LambdaLogGroup"
   #     FilterPattern: "*"
 
+  ########################################################################
   # Função Lambda para consumir API
+  ########################################################################
   PunkAPICliLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Type: AWS::Serverless::Function
@@ -45,7 +47,9 @@ Resources:
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
 
+  ########################################################################
   # Cria AWS Kinesis Data Stream  
+  ########################################################################
   KinesisStream:
     # Doc https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
     Type: AWS::Kinesis::Stream
@@ -54,7 +58,9 @@ Resources:
       ShardCount: 1
     # Ref: https://serverlessland.com/patterns/kinesis-lambda
 
+  ########################################################################
   # Cria uma regra de acesso para Lambda escrever no Kinesis e no log
+  ########################################################################
   LambdaPinkApiCliRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: AWS::IAM::Role
@@ -98,20 +104,26 @@ Resources:
       RoleName: "LambdaPinkApiCliRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."   
   
+  ########################################################################
   # Cria repositório para dados Raw
+  ########################################################################
   RawDataBucket:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapiraw
   
+  ########################################################################
   # Cria repositório para dados cleaned
+  ########################################################################
   CleanedDataBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: punkapicleaned
   
+  ########################################################################
   # Cria regra para os lambdas poderem inserir dados no log
+  ########################################################################
   LambdaCleanRole:
     Type: AWS::IAM::Role
     Properties: 
@@ -140,7 +152,9 @@ Resources:
       RoleName: "LambdaCleanRole"
       Description: "Cria uma regra para permitir a função lambda a enviar dados para o log."   
   
+  ########################################################################
   # Função Lambda para resgatar campos de interesse (clean)
+  ########################################################################
   PunkAPICleanLambda:
     # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Type: AWS::Serverless::Function
@@ -153,50 +167,9 @@ Resources:
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
   
-  # Cria Firehose para ingerir dados no S3
-  FirehoseStream:
-    # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesisfirehose-deliverystream.html
-    Type: AWS::KinesisFirehose::DeliveryStream
-    Properties:
-      DeliveryStreamName: PunkAPIFirehose
-      DeliveryStreamType: KinesisStreamAsSource
-      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-kinesisstreamsourceconfiguration.html
-      KinesisStreamSourceConfiguration:
-        KinesisStreamARN: !GetAtt KinesisStream.Arn
-        RoleARN: !GetAtt FirehoseRole.Arn
-      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
-      # S3DestinationConfiguration:
-      #   BucketArn: !GetAtt RawDataBucket.Arn
-      #   BufferingHints:
-      #     IntervalInSeconds: 60
-      #     SizeInMBs: 3
-      #   RoleARN: !GetAtt FirehoseRole.Arn
-      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
-      ExtendedS3DestinationConfiguration:
-        BucketARN: !GetAtt CleanedDataBucket.Arn
-        # CompressionFormat: GZIP
-        RoleARN: !GetAtt FirehoseRole.Arn
-        BufferingHints:
-          IntervalInSeconds: 120
-          SizeInMBs: 10
-        # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
-        ProcessingConfiguration:
-          Enabled: true
-          Processors:
-            - Type: Lambda
-              Parameters:
-                - ParameterName: LambdaArn
-                  ParameterValue: !GetAtt PunkAPICleanLambda.Arn
-        S3BackupMode: Enabled
-        S3BackupConfiguration:
-          BucketARN: !GetAtt RawDataBucket.Arn
-          # CompressionFormat: GZIP
-          RoleARN: !GetAtt FirehoseRole.Arn
-          BufferingHints:
-            IntervalInSeconds: 120
-            SizeInMBs: 10  
-  
+########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
+  ########################################################################
   FirehoseRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: AWS::IAM::Role
@@ -256,4 +229,124 @@ Resources:
               Resource:
                 - !GetAtt PunkAPICleanLambda.Arn
       RoleName: FirehoseRole
-      Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3." 
+      Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3."
+
+  ########################################################################
+  # Cria Firehose para ingerir dados no S3
+  ########################################################################
+  FirehoseStream:
+    # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesisfirehose-deliverystream.html
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: PunkAPIFirehose
+      DeliveryStreamType: KinesisStreamAsSource
+      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-kinesisstreamsourceconfiguration.html
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !GetAtt KinesisStream.Arn
+        RoleARN: !GetAtt FirehoseRole.Arn
+      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
+      # S3DestinationConfiguration:
+      #   BucketArn: !GetAtt RawDataBucket.Arn
+      #   BufferingHints:
+      #     IntervalInSeconds: 60
+      #     SizeInMBs: 3
+      #   RoleARN: !GetAtt FirehoseRole.Arn
+      # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
+      ExtendedS3DestinationConfiguration:
+        BucketARN: !GetAtt CleanedDataBucket.Arn
+        # CompressionFormat: GZIP
+        RoleARN: !GetAtt FirehoseRole.Arn
+        BufferingHints:
+          IntervalInSeconds: 120
+          SizeInMBs: 10
+        # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
+        ProcessingConfiguration:
+          Enabled: true
+          Processors:
+            - Type: Lambda
+              Parameters:
+                - ParameterName: LambdaArn
+                  ParameterValue: !GetAtt PunkAPICleanLambda.Arn
+        S3BackupMode: Enabled
+        S3BackupConfiguration:
+          BucketARN: !GetAtt RawDataBucket.Arn
+          # CompressionFormat: GZIP
+          RoleARN: !GetAtt FirehoseRole.Arn
+          BufferingHints:
+            IntervalInSeconds: 120
+            SizeInMBs: 10  
+
+  ########################################################################
+  # Cria Database para armazenar os metadados identificados pelo crawler
+  ########################################################################
+  TableCleanGlue:
+    # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-glue-database-databaseinput.html
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: punkcleantable
+        Description: "Banco com informações de metadados identificados pelo crawler."
+
+  ########################################################################
+  # Cria permissionamento para crawler acessar informações do S3
+  ########################################################################
+  CrawlerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "glue.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: LogPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Effect: Allow
+              Resource: 
+                - "arn:aws:logs:*:*:*"
+        - PolicyName: S3ReadPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - s3:GetObject
+                - s3:ListBucket
+              Effect: Allow
+              Resource:
+                - !GetAtt CleanedDataBucket.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt CleanedDataBucket.Arn }
+
+  ########################################################################
+  # Cria Crawler para identificar schema dos dados limpos 
+  ########################################################################
+  CrawlerCleanGlue:
+    # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-glue-crawler.html
+    # Ref: https://github.com/subkanthi/aws-glue-crawler/blob/master/glue-templates/glue-s3-crawler.yaml
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: CrawlerCleanGlue
+      Description: "Permite identificar o schema dos dados limpos."
+      Role: !GetAtt CrawlerRole.Arn
+      DatabaseName: !Ref TableCleanGlue
+      Targets: 
+        - S3Targets:
+          - Path: !Ref CleanedDataBucket
+      RecrawPolicy: CRAWL_NEW_FOLDERS_ONLY
+      SchemaChangePolicy:
+        UpdateBehavior: "UPDATE_IN_DATABASE"
+        DeleteBehavior: "LOG"
+      TablePrefix: "punk-api-clean-"
