@@ -347,7 +347,8 @@ Resources:
       Targets: 
         S3Targets:
           - Path: !Ref CleanedDataBucket
-      RecrawlPolicy: "CRAWL_NEW_FOLDERS_ONLY"
+      RecrawlPolicy: 
+        RecrawlBehavior: "CRAWL_NEW_FOLDERS_ONLY"
       SchemaChangePolicy:
         UpdateBehavior: "UPDATE_IN_DATABASE"
         DeleteBehavior: "LOG"
