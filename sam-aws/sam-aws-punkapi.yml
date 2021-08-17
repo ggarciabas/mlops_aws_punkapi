@@ -318,8 +318,18 @@ Resources:
               Effect: Allow
               Resource: 
                 - "arn:aws:logs:*:*:*"
-        - S3FullAccessPolicy:
-            BucketName: !Ref CleanedDataBucket
+        - PolicyName: S3GluePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - s3:*
+              Effect: Allow
+              Resource:
+                - !GetAtt CleanedDataBucket.Arn
+                - !Sub
+                  - ${Arn}/*
+                  - { Arn: !GetAtt CleanedDataBucket.Arn }
         - PolicyName: GluePolicy
           PolicyDocument:
             Version: '2012-10-17'
