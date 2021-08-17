@@ -350,6 +350,6 @@ Resources:
       RecrawlPolicy: 
         RecrawlBehavior: "CRAWL_NEW_FOLDERS_ONLY"
       SchemaChangePolicy:
-        UpdateBehavior: "UPDATE_IN_DATABASE"
+        UpdateBehavior: "LOG"
         DeleteBehavior: "LOG"
       TablePrefix: "punk-api-clean-"
