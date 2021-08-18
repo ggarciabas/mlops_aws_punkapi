@@ -169,13 +169,13 @@ Resources:
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
   
-########################################################################
-# Cria regra de acesso do Firehose para Kinesis Stream
-########################################################################
-FirehoseRole:
-  # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
-  Type: AWS::IAM::Role
-  Properties: 
+  ########################################################################
+  # Cria regra de acesso do Firehose para Kinesis Stream
+  ########################################################################
+  FirehoseRole:
+    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
+    Properties: 
     AssumeRolePolicyDocument:
       Version: "2012-10-17"
       Statement:
