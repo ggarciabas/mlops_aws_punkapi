@@ -255,10 +255,10 @@ Resources:
             Statement:
               Action:
                 - kinesis:*
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
-                # - kinesis:GetRecords
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
-                # - kinesis:DescribeStream
+                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
+                - kinesis:GetRecords
+                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
+                - kinesis:DescribeStream
                 # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html                
               Effect: Allow
               Resource:
