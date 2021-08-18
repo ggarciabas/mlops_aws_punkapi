@@ -14,12 +14,25 @@ Parameters:
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
+  # # Cria grupo para escrever no log
+  # LambdaLogGroup:
+  #   # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html
+  #   Type: AWS::Logs::LogGroup
+  #   Properties: 
+  #     LogGroupName: "LambdaLogGroup"
+  # # Cria cloudwatch para screver no log
+  # CloudWatchLog:
+  #   # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-cloudwatchlogs.html
+  #   Type: CloudWatchLogs
+  #   Properties:
+  #     LogGroupName: "LambdaLogGroup"
+  #     FilterPattern: "*"
 
   ########################################################################
   # Função Lambda para consumir API
   ########################################################################
   PunkAPICliLambda:
-    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: punkapi_cli/
@@ -145,7 +158,7 @@ Resources:
   # Função Lambda para resgatar campos de interesse (clean)
   ########################################################################
   PunkAPICleanLambda:
-    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: punkapi_clean/
@@ -156,13 +169,13 @@ Resources:
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
   
-  ########################################################################
+########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
   ########################################################################
   FirehoseRole:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: AWS::IAM::Role
-    Properties:
+    Properties: 
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -243,7 +256,7 @@ Resources:
       # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
       ExtendedS3DestinationConfiguration:
         BucketARN: !GetAtt CleanedDataBucket.Arn
-        CompressionFormat: GZIP
+        # CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
           IntervalInSeconds: 120
@@ -259,7 +272,7 @@ Resources:
         S3BackupMode: Enabled
         S3BackupConfiguration:
           BucketARN: !GetAtt RawDataBucket.Arn
-          CompressionFormat: GZIP
+          # CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
             IntervalInSeconds: 120
@@ -268,13 +281,13 @@ Resources:
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
   ########################################################################
-  DatabaseCleanGlue:
+  TableCleanGlue:
     # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-glue-database-databaseinput.html
     Type: AWS::Glue::Database
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
-        Name: punkcleandb
+        Name: punkcleantable
         Description: "Banco com informações de metadados identificados pelo crawler."
 
   ########################################################################
@@ -305,27 +318,19 @@ Resources:
               Effect: Allow
               Resource: 
                 - "arn:aws:logs:*:*:*"
-        - PolicyName: S3GluePolicy
+        - PolicyName: S3ReadPolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
               Action:
-                - s3:*
+                - s3:GetObject
+                - s3:ListBucket
               Effect: Allow
               Resource:
                 - !GetAtt CleanedDataBucket.Arn
                 - !Sub
                   - ${Arn}/*
                   - { Arn: !GetAtt CleanedDataBucket.Arn }
-        - PolicyName: GluePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              Action:
-                - glue:*
-              Effect: Allow
-              Resource:
-                - "arn:aws:glue:*:*:*"
 
   ########################################################################
   # Cria Crawler para identificar schema dos dados limpos 
@@ -338,15 +343,13 @@ Resources:
       Name: CrawlerCleanGlue
       Description: "Permite identificar o schema dos dados limpos."
       Role: !GetAtt CrawlerRole.Arn
-      DatabaseName: !Ref DatabaseCleanGlue
+      DatabaseName: !Ref TableCleanGlue
       Targets: 
         S3Targets:
           - Path: !Ref CleanedDataBucket
-          - Exclusions: 
-            - "*failed"
       RecrawlPolicy: 
-        RecrawlBehavior: "CRAWL_EVERYTHING"
+        RecrawlBehavior: "CRAWL_NEW_FOLDERS_ONLY"
       SchemaChangePolicy:
-        UpdateBehavior: "UPDATE_IN_DATABASE"
+        UpdateBehavior: "LOG"
         DeleteBehavior: "LOG"
       TablePrefix: "punk-api-clean-"
