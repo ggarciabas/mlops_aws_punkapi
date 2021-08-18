@@ -19,7 +19,7 @@ def lambda_handler(event, context):
         print (f"Data dict: {data_dict}")
         final_data  = { k: data_dict[k] for k in filter_keys }
         print (f"Chaves finais: {final_data.keys()}")
-        encoded_data = str(final_data).encode()
+        encoded_data = str(final_data).encode() + "\n"
         print (f"Encoded final data: {encoded_data}")
 
         output_record = {
