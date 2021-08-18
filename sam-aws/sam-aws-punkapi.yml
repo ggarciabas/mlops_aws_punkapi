@@ -148,7 +148,7 @@ Resources:
       State: "DISABLED"
       Targets:
         - Arn: !Ref PunkAPICliLambda
-          Id: !GetAtt PunkAPICliLambda.FunctionName
+          Id: ScheduledEventRuleLambdaID
           RoleArn: !GetAtt ScheduledEventIAMRole.Arn
 
   ########################################################################
