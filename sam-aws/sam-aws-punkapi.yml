@@ -282,7 +282,7 @@ Resources:
         S3BackupMode: Enabled
         S3BackupConfiguration:
           BucketARN: !GetAtt RawDataBucket.Arn
-          CompressionFormat: UNCOMPRESSED
+          CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
             IntervalInSeconds: !Ref FirehoseInterval
