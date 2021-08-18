@@ -18,6 +18,7 @@
 
 Para acessar os notebooks via colab:
 - [Exploração da API](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/master/notebooks/Explora_API.ipynb)
+- [Modelo para classificar bebidas](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/master/notebooks/Modelagem.ipynb)
 
 ### SAM
 <!-- Adicionar caminhos para os scripts -->
