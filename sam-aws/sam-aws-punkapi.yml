@@ -256,6 +256,9 @@ Resources:
       KinesisStreamSourceConfiguration:
         KinesisStreamARN: !GetAtt KinesisStream.Arn
         RoleARN: !GetAtt FirehoseRole.Arn
+      BufferingHints:
+        IntervalInSeconds: !Ref FirehoseInterval
+        SizeInMBs: !Ref FirehoseSize
       # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
       # S3DestinationConfiguration:
       #   BucketArn: !GetAtt RawDataBucket.Arn
@@ -268,9 +271,9 @@ Resources:
         BucketARN: !GetAtt CleanedDataBucket.Arn
         CompressionFormat: UNCOMPRESSED
         RoleARN: !GetAtt FirehoseRole.Arn
-        # BufferingHints:
-        #   IntervalInSeconds: !Ref FirehoseInterval
-        #   SizeInMBs: !Ref FirehoseSize
+        BufferingHints:
+          IntervalInSeconds: !Ref FirehoseInterval
+          SizeInMBs: !Ref FirehoseSize
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
