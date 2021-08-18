@@ -48,5 +48,7 @@ Para acessar os notebooks via colab:
 - [Writing to Kinesis stream using AWS Lambda Function](https://stackoverflow.com/questions/33824904/writing-to-kinesis-stream-using-aws-lambda-function)
 - [How do I give permissions to my Lambda functions by using policies and roles in AWS SAM templates?](https://aws.amazon.com/premiumsupport/knowledge-center/lambda-sam-template-permissions/)
 - [SVS317-R Serverless stream processing pipeline best practices](https://d1.awsstatic.com/events/reinvent/2019/REPEAT_1_Serverless_stream_processing_pipeline_best_practices_SVS317-R1.pdf)
+- [ANT316 Choosing the right service for your data streaming needs](https://d1.awsstatic.com/events/reinvent/2019/Choosing_the_right_service_for_your_data_streaming_needs_ANT316.pdf)
+- [ANT326 Building a streaming data platform with Amazon Kinesis](https://d1.awsstatic.com/events/reinvent/2019/REPEAT_1_Building_a_streaming_data_platform_with_Amazon_Kinesis_ANT326-R1.pdf)
 
 <!-- Icons: https://simpleicons.org/ Shields: https://img.shields.io/badge-->
