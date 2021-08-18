@@ -159,10 +159,11 @@ Resources:
       Description: "Evento programado para chamar função de consulta da API a cada 5 minutos."
       ScheduleExpression: !Ref CliLambdaInterval
       State: "DISABLED"
+      # Problema com Regras dentro do target: https://github.com/aws-cloudformation/cloudformation-coverage-roadmap/issues/351#issuecomment-625810783
+      RoleArn: !GetAtt ScheduledEventIAMRole.Arn
       Targets:
         - Arn: !GetAtt PunkAPICliLambda.Arn
           Id: ScheduledEventRuleLambdaID
-          RoleArn: !GetAtt ScheduledEventIAMRole.Arn
 
   ########################################################################
   # Cria repositório para dados Raw
