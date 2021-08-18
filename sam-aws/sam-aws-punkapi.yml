@@ -266,11 +266,12 @@ Resources:
       # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
       ExtendedS3DestinationConfiguration:
         BucketARN: !GetAtt CleanedDataBucket.Arn
-        CompressionFormat: GZIP
+        CompressionFormat: UNCOMPRESSED
         RoleARN: !GetAtt FirehoseRole.Arn
-        BufferingHints:
-          IntervalInSeconds: !Ref FirehoseInterval
-          SizeInMBs: !Ref FirehoseSize
+        # BufferingHints:
+        #   IntervalInSeconds: !Ref FirehoseInterval
+        #   SizeInMBs: !Ref FirehoseSize
+        Prefix: "cleaned"
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
@@ -287,6 +288,7 @@ Resources:
           BufferingHints:
             IntervalInSeconds: !Ref FirehoseInterval
             SizeInMBs: !Ref FirehoseSize
+          Prefix: "raw"
 
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
