@@ -31,7 +31,7 @@ jobs:
       - run: sam deploy --no-confirm-changeset
                         --no-fail-on-empty-changeset
                         --template .aws-sam/build/template.yaml
-                        --stack-name punk-api-stack
+                        --stack-name mlops-punk-api-stack
                         --s3-bucket github-action-aws
                         --region sa-east-1
                         --capabilities CAPABILITY_NAMED_IAM
