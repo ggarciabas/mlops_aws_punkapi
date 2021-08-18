@@ -16,12 +16,12 @@ Parameters:
     Default: rate(1 minute)
     Description: "Intervalo de tempo de chamada da função para consulta da API."
   FirehoseInterval: # sec
-    Type: Integer
-    Default: 300 # 5min
+    Type: Number
+    Default: "300" # 5min
     Description: "Intervalo de tempo para buffering do firehose."
   FirehoseSize: # MB
-    Type: Integer
-    Default: 30
+    Type: Number
+    Default: "30"
     Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
@@ -101,68 +101,17 @@ Resources:
       Environment:
         Variables:
           KinesisStreamName: !Ref KinesisStreamName
-      # Events:
-      #   CheckWebsiteScheduledEvent:
-      #     Type: Schedule
-      #     Properties:
-      #       # Must follow this syntax: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
-      #       Schedule: rate(5 minutes)
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
-
-  ########################################################################
-  # Regra para ativar função lambda
-  ########################################################################
-  ScheduledEventIAMRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Service:
-                  - "events.amazonaws.com"
-            Action:
-              - "sts:AssumeRole"
-      Policies:
-        - PolicyName: LogPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              Action:
-                - "logs:CreateLogGroup"
-                - "logs:CreateLogStream"
-                - "logs:PutLogEvents"
-              Effect: Allow
-              Resource: 
-                - "arn:aws:logs:*:*:*"
-        - PolicyName: LambdaInvokePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              Action:
-                - lambda:InvokeFunction
-              Effect: Allow
-              Resource:
-                - !GetAtt PunkAPICliLambda.Arn
-
-  ########################################################################
-  # Evento de chamada da função para cada 5min
-  ########################################################################
-  # Ref: https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
-  # Ref: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
-  ScheduledEventRule:
-    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-events-rule.html
-    Type: "AWS::Events::Rule"
-    Properties:
-      Description: "Evento programado para chamar função de consulta da API a cada 5 minutos."
-      ScheduleExpression: !Ref CliLambdaInterval
-      State: "DISABLED"
-      Targets:
-        - Arn: !Ref PunkAPICliLambda
-          Id: ScheduledEventRuleLambdaID
-          RoleArn: !GetAtt ScheduledEventIAMRole.Arn
+      Events:
+        ScheduledLambda:
+          # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedule.html
+          Type: Schedule
+          Properties:
+            Description: "Chama a função lambda de acordo com o tempo configurado."
+            Enabled: false
+            Name: ScheduledLambda
+            Schedule: !Ref CliLambdaInterval
 
   ########################################################################
   # Cria repositório para dados Raw
@@ -228,6 +177,7 @@ Resources:
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
+      Timeout: 30
   
   ########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
@@ -254,10 +204,10 @@ Resources:
             Statement:
               Action:
                 - kinesis:*
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
-                # - kinesis:GetRecords
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
-                # - kinesis:DescribeStream
+                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
+                - kinesis:GetRecords
+                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
+                - kinesis:DescribeStream
                 # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html                
               Effect: Allow
               Resource:
@@ -423,3 +373,61 @@ Resources:
         UpdateBehavior: "UPDATE_IN_DATABASE"
         DeleteBehavior: "LOG"
       TablePrefix: "punk-api-clean-"
+
+
+# ########################################################################
+# # Regra para ativar função lambda
+# ########################################################################
+# ScheduledEventIAMRole:
+#   Type: AWS::IAM::Role
+#   Properties:
+#     AssumeRolePolicyDocument:
+#       Version: "2012-10-17"
+#       Statement:
+#         - Effect: "Allow"
+#           Principal:
+#             Service:
+#                 - "events.amazonaws.com"
+#           Action:
+#             - "sts:AssumeRole"
+#     Policies:
+#       - PolicyName: LogPolicy
+#         PolicyDocument:
+#           Version: '2012-10-17'
+#           Statement:
+#             Action:
+#               - "logs:CreateLogGroup"
+#               - "logs:CreateLogStream"
+#               - "logs:PutLogEvents"
+#             Effect: Allow
+#             Resource: 
+#               - "arn:aws:logs:*:*:*"
+#       - PolicyName: LambdaInvokePolicy
+#         PolicyDocument:
+#           Version: '2012-10-17'
+#           Statement:
+#             Action:
+#               - lambda:InvokeFunction
+#             Effect: Allow
+#             Resource:
+#               - !GetAtt PunkAPICliLambda.Arn
+
+# ########################################################################
+# # Evento de chamada da função para cada 5min
+# ########################################################################
+# # Ref: https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
+# # Ref: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+# # Ref: https://docs.aws.amazon.com/lambda/latest/dg/with-scheduledevents-example-use-app-spec.html
+# ScheduledEventRule:
+#   # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-events-rule.html
+#   Type: "AWS::Events::Rule"
+#   Properties:
+#     Name: "ScheduledEventRule"
+#     Description: "Evento programado para chamar função de consulta da API a cada 5 minutos."
+#     ScheduleExpression: !Ref CliLambdaInterval
+#     State: "DISABLED"
+#     # Problema com Regras dentro do target: https://github.com/aws-cloudformation/cloudformation-coverage-roadmap/issues/351#issuecomment-625810783
+#     RoleArn: !GetAtt ScheduledEventIAMRole.Arn
+#     Targets:
+#       - Arn: !GetAtt PunkAPICliLambda.Arn
+#         Id: ScheduledEventRuleLambdaID
