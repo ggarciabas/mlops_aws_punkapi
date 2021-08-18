@@ -97,23 +97,23 @@ Resources:
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
 
-########################################################################
-# Regra para ativar função lambda
-########################################################################
-ScheduledEventIAMRole:
-  Type: AWS::IAM::Role
-  Properties:
-    AssumeRolePolicyDocument:
-      Version: "2012-10-17"
-      Statement:
-        - Effect: "Allow"
-          Principal:
-            Service:
-                - "events.amazonaws.com"
-          Action:
-            - "sts:AssumeRole"
-    Policies:
-      - PolicyName: LambdaInvokePolicy
+  ########################################################################
+  # Regra para ativar função lambda
+  ########################################################################
+  ScheduledEventIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                  - "events.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: LambdaInvokePolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
