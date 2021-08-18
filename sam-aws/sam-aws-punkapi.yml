@@ -145,7 +145,7 @@ Resources:
                 - lambda:InvokeFunction
               Effect: Allow
               Resource:
-                - !GetAtt PunkAPICliLambda.Arn
+                - !Ref PunkAPICliLambda
 
   ########################################################################
   # Evento de chamada da função para cada 5min
