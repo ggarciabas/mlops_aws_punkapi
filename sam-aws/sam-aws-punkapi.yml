@@ -160,9 +160,6 @@ Resources:
           KinesisStreamName: !Ref KinesisStreamName
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
-      Events:
-        ScheduledEventRule:
-          Type: EventBridgeRule
 
   ########################################################################
   # Cria repositório para dados Raw
