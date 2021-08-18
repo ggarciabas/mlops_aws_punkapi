@@ -10,29 +10,23 @@ Parameters:
     Type: String
     Default: "PunkAPIKinesisStream"
     Description: "Define o nome para Kinesis Data Stream."
+  CliLambdaInterval:
+    Type: String
+    # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
+    Default: rate(1 minute)
+    Description: "Intervalo de tempo de chamada da função para consulta da API."
+  FirehoseInterval: # sec
+    Type: Number
+    Default: "300" # 5min
+    Description: "Intervalo de tempo para buffering do firehose."
+  FirehoseSize: # MB
+    Type: Number
+    Default: "30"
+    Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
-
-  ########################################################################
-  # Função Lambda para consumir API
-  ########################################################################
-  PunkAPICliLambda:
-    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: punkapi_cli/
-      Handler: app.lambda_handler
-      Runtime: python3.8
-      FunctionName: PunkAPICliLambdaFunction
-      VersionDescription: "0.01"
-      Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
-      Environment:
-        Variables:
-          KinesisStreamName: !Ref KinesisStreamName
-      # Permite enviar dados para Kinesis e escrever no log
-      Role: !GetAtt LambdaPinkApiCliRole.Arn
 
   ########################################################################
   # Cria AWS Kinesis Data Stream  
@@ -89,8 +83,36 @@ Resources:
                   - ${Arn}/*
                   - { Arn: !GetAtt KinesisStream.Arn }
       RoleName: "LambdaPinkApiCliRole"
-      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."   
-  
+      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."  
+
+  ########################################################################
+  # Função Lambda para consumir API
+  ########################################################################
+  PunkAPICliLambda:
+    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: punkapi_cli/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      FunctionName: PunkAPICliLambdaFunction
+      VersionDescription: "0.01"
+      Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
+      Environment:
+        Variables:
+          KinesisStreamName: !Ref KinesisStreamName
+      # Permite enviar dados para Kinesis e escrever no log
+      Role: !GetAtt LambdaPinkApiCliRole.Arn
+      Events:
+        ScheduledLambda:
+          # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedule.html
+          Type: Schedule
+          Properties:
+            Description: "Chama a função lambda de acordo com o tempo configurado."
+            Enabled: false
+            Name: ScheduledLambda
+            Schedule: !Ref CliLambdaInterval
+
   ########################################################################
   # Cria repositório para dados Raw
   ########################################################################
@@ -155,6 +177,7 @@ Resources:
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
+      Timeout: 30
   
   ########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
@@ -181,10 +204,10 @@ Resources:
             Statement:
               Action:
                 - kinesis:*
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
-                # - kinesis:GetRecords
-                # # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
-                # - kinesis:DescribeStream
+                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_GetRecords.html
+                - kinesis:GetRecords
+                # Doc: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html
+                - kinesis:DescribeStream
                 # Kinesis actions: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_Operations.html                
               Effect: Allow
               Resource:
@@ -246,8 +269,8 @@ Resources:
         CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
-          IntervalInSeconds: 120
-          SizeInMBs: 10
+          IntervalInSeconds: !Ref FirehoseInterval
+          SizeInMBs: !Ref FirehoseSize
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
@@ -262,8 +285,8 @@ Resources:
           CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
-            IntervalInSeconds: 120
-            SizeInMBs: 10  
+            IntervalInSeconds: !Ref FirehoseInterval
+            SizeInMBs: !Ref FirehoseSize
 
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
@@ -350,3 +373,61 @@ Resources:
         UpdateBehavior: "UPDATE_IN_DATABASE"
         DeleteBehavior: "LOG"
       TablePrefix: "punk-api-clean-"
+
+
+# ########################################################################
+# # Regra para ativar função lambda
+# ########################################################################
+# ScheduledEventIAMRole:
+#   Type: AWS::IAM::Role
+#   Properties:
+#     AssumeRolePolicyDocument:
+#       Version: "2012-10-17"
+#       Statement:
+#         - Effect: "Allow"
+#           Principal:
+#             Service:
+#                 - "events.amazonaws.com"
+#           Action:
+#             - "sts:AssumeRole"
+#     Policies:
+#       - PolicyName: LogPolicy
+#         PolicyDocument:
+#           Version: '2012-10-17'
+#           Statement:
+#             Action:
+#               - "logs:CreateLogGroup"
+#               - "logs:CreateLogStream"
+#               - "logs:PutLogEvents"
+#             Effect: Allow
+#             Resource: 
+#               - "arn:aws:logs:*:*:*"
+#       - PolicyName: LambdaInvokePolicy
+#         PolicyDocument:
+#           Version: '2012-10-17'
+#           Statement:
+#             Action:
+#               - lambda:InvokeFunction
+#             Effect: Allow
+#             Resource:
+#               - !GetAtt PunkAPICliLambda.Arn
+
+# ########################################################################
+# # Evento de chamada da função para cada 5min
+# ########################################################################
+# # Ref: https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
+# # Ref: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+# # Ref: https://docs.aws.amazon.com/lambda/latest/dg/with-scheduledevents-example-use-app-spec.html
+# ScheduledEventRule:
+#   # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-events-rule.html
+#   Type: "AWS::Events::Rule"
+#   Properties:
+#     Name: "ScheduledEventRule"
+#     Description: "Evento programado para chamar função de consulta da API a cada 5 minutos."
+#     ScheduleExpression: !Ref CliLambdaInterval
+#     State: "DISABLED"
+#     # Problema com Regras dentro do target: https://github.com/aws-cloudformation/cloudformation-coverage-roadmap/issues/351#issuecomment-625810783
+#     RoleArn: !GetAtt ScheduledEventIAMRole.Arn
+#     Targets:
+#       - Arn: !GetAtt PunkAPICliLambda.Arn
+#         Id: ScheduledEventRuleLambdaID

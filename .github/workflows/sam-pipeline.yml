@@ -1,7 +1,7 @@
 name: Github Action para publicar recursos na AWS
 
 on:
-  push:
+  pull_request:
     branches:
       - gaction_aws
 jobs:
