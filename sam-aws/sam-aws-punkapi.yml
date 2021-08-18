@@ -145,7 +145,7 @@ Resources:
                 - lambda:InvokeFunction
               Effect: Allow
               Resource:
-                - !Ref PunkAPICliLambda
+                - !GetAtt PunkAPICliLambda.Arn
 
   ########################################################################
   # Evento de chamada da função para cada 5min
@@ -160,7 +160,7 @@ Resources:
       ScheduleExpression: !Ref CliLambdaInterval
       State: "DISABLED"
       Targets:
-        - Arn: !Ref PunkAPICliLambda
+        - Arn: !GetAtt PunkAPICliLambda.Arn
           Id: ScheduledEventRuleLambdaID
           RoleArn: !GetAtt ScheduledEventIAMRole.Arn
 
