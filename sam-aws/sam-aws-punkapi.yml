@@ -10,6 +10,19 @@ Parameters:
     Type: String
     Default: "PunkAPIKinesisStream"
     Description: "Define o nome para Kinesis Data Stream."
+  CliLambdaInterval:
+    Type: String
+    # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
+    Default: rate(1 minute)
+    Description: "Intervalo de tempo de chamada da função para consulta da API."
+  FirehoseInterval: # sec
+    Type: Integer
+    Default: 300 # 5min
+    Description: "Intervalo de tempo para buffering do firehose."
+  FirehoseSize: # MB
+    Type: Integer
+    Default: 30
+    Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -144,7 +157,7 @@ Resources:
     Type: "AWS::Events::Rule"
     Properties:
       Description: "Evento programado para chamar função de consulta da API a cada 5 minutos."
-      ScheduleExpression: rate(5 minutes)
+      ScheduleExpression: !Ref CliLambdaInterval
       State: "DISABLED"
       Targets:
         - Arn: !Ref PunkAPICliLambda
@@ -306,8 +319,8 @@ Resources:
         CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
-          IntervalInSeconds: 120
-          SizeInMBs: 10
+          IntervalInSeconds: !Ref FirehoseInterval
+          SizeInMBs: !Ref FirehoseSize
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
@@ -322,8 +335,8 @@ Resources:
           CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
-            IntervalInSeconds: 120
-            SizeInMBs: 10  
+            IntervalInSeconds: !Ref FirehoseInterval
+            SizeInMBs: !Ref FirehoseSize
 
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
