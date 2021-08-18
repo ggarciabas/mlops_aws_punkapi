@@ -228,7 +228,7 @@ Resources:
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
-      Timeout: 
+      Timeout: 30s
   
   ########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
