@@ -16,25 +16,6 @@ Resources:
   # LogicalID
 
   ########################################################################
-  # Função Lambda para consumir API
-  ########################################################################
-  PunkAPICliLambda:
-    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: punkapi_cli/
-      Handler: app.lambda_handler
-      Runtime: python3.8
-      FunctionName: PunkAPICliLambdaFunction
-      VersionDescription: "0.01"
-      Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
-      Environment:
-        Variables:
-          KinesisStreamName: !Ref KinesisStreamName
-      # Permite enviar dados para Kinesis e escrever no log
-      Role: !GetAtt LambdaPinkApiCliRole.Arn
-
-  ########################################################################
   # Cria AWS Kinesis Data Stream  
   ########################################################################
   KinesisStream:
@@ -89,8 +70,76 @@ Resources:
                   - ${Arn}/*
                   - { Arn: !GetAtt KinesisStream.Arn }
       RoleName: "LambdaPinkApiCliRole"
-      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."   
-  
+      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."  
+
+  ########################################################################
+  # Função Lambda para consumir API
+  ########################################################################
+  PunkAPICliLambda:
+    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: punkapi_cli/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      FunctionName: PunkAPICliLambdaFunction
+      VersionDescription: "0.01"
+      Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
+      Environment:
+        Variables:
+          KinesisStreamName: !Ref KinesisStreamName
+      # Events:
+      #   CheckWebsiteScheduledEvent:
+      #     Type: Schedule
+      #     Properties:
+      #       # Must follow this syntax: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+      #       Schedule: rate(5 minutes)
+      # Permite enviar dados para Kinesis e escrever no log
+      Role: !GetAtt LambdaPinkApiCliRole.Arn
+
+  ########################################################################
+  # Regra para ativar função lambda
+  ########################################################################
+  ScheduledEventIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                  - "events.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: LambdaInvokePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - lambda:InvokeFunction
+              Effect: Allow
+              Resource:
+                - !GetAtt PunkAPICliLambda.Arn
+
+  ########################################################################
+  # Evento de chamada da função para cada 5min
+  ########################################################################
+  # Ref: https://blog.shikisoft.com/3-ways-to-schedule-aws-lambda-and-step-functions-state-machines/
+  # Ref: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+  ScheduledEventRule:
+    # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-events-rule.html
+    Type: "AWS::Events::Rule"
+    Properties:
+      Description: "Evento programado para chamar função de consulta da API a cada 5 minutos."
+      ScheduleExpression: rate(5 minutes)
+      State: "DISABLED"
+      Targets:
+        - Arn: !Ref PunkAPICliLambda
+          Id: !GetAtt PunkAPICliLambda.Name
+          RoleArn: !GetAtt ScheduledEventIAMRole.Arn
+
   ########################################################################
   # Cria repositório para dados Raw
   ########################################################################
