@@ -16,25 +16,6 @@ Resources:
   # LogicalID
 
   ########################################################################
-  # Função Lambda para consumir API
-  ########################################################################
-  PunkAPICliLambda:
-    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: punkapi_cli/
-      Handler: app.lambda_handler
-      Runtime: python3.8
-      FunctionName: PunkAPICliLambdaFunction
-      VersionDescription: "0.01"
-      Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
-      Environment:
-        Variables:
-          KinesisStreamName: !Ref KinesisStreamName
-      # Permite enviar dados para Kinesis e escrever no log
-      Role: !GetAtt LambdaPinkApiCliRole.Arn
-
-  ########################################################################
   # Cria AWS Kinesis Data Stream  
   ########################################################################
   KinesisStream:
@@ -89,7 +70,26 @@ Resources:
                   - ${Arn}/*
                   - { Arn: !GetAtt KinesisStream.Arn }
       RoleName: "LambdaPinkApiCliRole"
-      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."   
+      Description: "Cria uma regra para permitir a função lambda a enviar dados para o Kinesis e para o log."  
+
+  ########################################################################
+  # Função Lambda para consumir API
+  ########################################################################
+  PunkAPICliLambda:
+    # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: punkapi_cli/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      FunctionName: PunkAPICliLambdaFunction
+      VersionDescription: "0.01"
+      Description: "Função lambda que consome endpoint da Punk API para obter bebidas aleatórias."
+      Environment:
+        Variables:
+          KinesisStreamName: !Ref KinesisStreamName
+      # Permite enviar dados para Kinesis e escrever no log
+      Role: !GetAtt LambdaPinkApiCliRole.Arn   
   
   ########################################################################
   # Cria repositório para dados Raw
