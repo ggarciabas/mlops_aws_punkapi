@@ -132,7 +132,7 @@ Resources:
     # Doc: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-resource-events-rule.html
     Type: "AWS::Events::Rule"
     Properties:
-      Name: ScheduledEventRule
+      Name: "ScheduledEventRule"
       Description: "Evento programado para chamar função de consulta da API a cada 5 minutos."
       ScheduleExpression: !Ref CliLambdaInterval
       State: "DISABLED"
@@ -158,19 +158,13 @@ Resources:
       Environment:
         Variables:
           KinesisStreamName: !Ref KinesisStreamName
-      # Events:
-      #   CheckWebsiteScheduledEvent:
-      #     Type: Schedule
-      #     Properties:
-      #       # Must follow this syntax: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
-      #       Schedule: rate(5 minutes)
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
       Events:
         ScheduledEventRule:
           Type: Schedule
-            Properties:
-              Schedule: !Ref CliLambdaInterval
+          Properties:
+            Schedule: !Ref CliLambdaInterval
 
   ########################################################################
   # Cria repositório para dados Raw
