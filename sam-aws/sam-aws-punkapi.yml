@@ -162,9 +162,11 @@ Resources:
       Role: !GetAtt LambdaPinkApiCliRole.Arn
       Events:
         ScheduledEventRule:
-          Type: Schedule
+          Type: AWS::Events::Rule
           Properties:
-            Schedule: !Ref CliLambdaInterval
+            EventPattern:
+              source:
+                - "aws.events"
 
   ########################################################################
   # Cria repositório para dados Raw
