@@ -16,12 +16,12 @@ Parameters:
     Default: rate(1 minute)
     Description: "Intervalo de tempo de chamada da função para consulta da API."
   FirehoseInterval: # sec
-    Type: Integer
-    Default: 300 # 5min
+    Type: Number
+    Default: "300" # 5min
     Description: "Intervalo de tempo para buffering do firehose."
   FirehoseSize: # MB
-    Type: Integer
-    Default: 30
+    Type: Number
+    Default: "30"
     Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
@@ -228,6 +228,7 @@ Resources:
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
+      Timeout: 
   
   ########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
