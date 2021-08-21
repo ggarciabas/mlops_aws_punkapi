@@ -282,6 +282,7 @@ Resources:
               Parameters:
                 - ParameterName: LambdaArn
                   ParameterValue: !GetAtt PunkAPICleanLambda.Arn
+              # Como alterar as propriedades de buffer? No painel fica o default 3MB e 60s.
         S3BackupMode: Enabled
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
         S3BackupConfiguration:
