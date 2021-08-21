@@ -275,6 +275,8 @@ Resources:
         BufferingHints:
           IntervalInSeconds: 900
           SizeInMBs: 10
+          # GetRecords (Data Stream) can retrieve up to 10 MB of data per call from a single shard
+          # Ref: https://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
