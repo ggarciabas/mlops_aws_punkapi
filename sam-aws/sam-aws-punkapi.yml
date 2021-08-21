@@ -290,6 +290,9 @@ Resources:
           BucketARN: !GetAtt RawDataBucket.Arn
           CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
+          BufferingHints:
+            IntervalInSeconds: 900
+            SizeInMBs: 10
 
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
