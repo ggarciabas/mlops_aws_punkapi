@@ -13,11 +13,11 @@ Parameters:
   CliLambdaInterval:
     Type: String
     # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
-    Default: rate(5 minutes)
+    Default: rate(1 minute)
     Description: "Intervalo de tempo de chamada da função para consulta da API."
   FirehoseInterval: # sec
     Type: Number
-    Default: "1800" # 5min
+    Default: "900" # 15min
     Description: "Intervalo de tempo para buffering do firehose."
   FirehoseSize: # MB
     Type: Number
@@ -104,6 +104,7 @@ Resources:
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
       Events:
+        # Como adicionar o schedule definido aqui?
         ScheduledLambda:
           # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedule.html
           Type: Schedule
