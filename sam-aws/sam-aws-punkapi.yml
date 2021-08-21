@@ -21,7 +21,7 @@ Parameters:
     Description: "Intervalo de tempo para buffering do firehose."
   FirehoseSize: # MB
     Type: Number
-    Default: "150"
+    Default: "100"
     Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
