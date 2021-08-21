@@ -270,7 +270,7 @@ Resources:
       # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-extendeds3destinationconfiguration.html
       ExtendedS3DestinationConfiguration:
         BucketARN: !GetAtt CleanedDataBucket.Arn
-        CompressionFormat: UNCOMPRESSED
+        CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
           IntervalInSeconds: 900
