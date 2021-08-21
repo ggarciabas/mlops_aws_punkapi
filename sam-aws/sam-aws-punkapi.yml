@@ -233,6 +233,17 @@ Resources:
               Effect: Allow
               Resource:
                 - !GetAtt PunkAPICleanLambda.Arn
+        - PolicyName: LogPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Effect: Allow
+              Resource: 
+                - "arn:aws:logs:*:*:*"
       RoleName: FirehoseRole
       Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3."
 
@@ -262,17 +273,19 @@ Resources:
         CompressionFormat: UNCOMPRESSED
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
-          IntervalInSeconds: 60
-          SizeInMBs: 3
+          IntervalInSeconds: 900
+          SizeInMBs: 10
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
+          # Doc: https://aws.amazon.com/kinesis/data-streams/pricing/
           Processors:
             - Type: Lambda
               Parameters:
                 - ParameterName: LambdaArn
                   ParameterValue: !GetAtt PunkAPICleanLambda.Arn
         S3BackupMode: Enabled
+        # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
         S3BackupConfiguration:
           BucketARN: !GetAtt RawDataBucket.Arn
           CompressionFormat: GZIP
