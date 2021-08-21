@@ -17,11 +17,11 @@ Parameters:
     Description: "Intervalo de tempo de chamada da função para consulta da API."
   FirehoseInterval: # sec
     Type: Number
-    Default: "900" # 15min
+    Default: "600" # 10min
     Description: "Intervalo de tempo para buffering do firehose."
   FirehoseSize: # MB
     Type: Number
-    Default: "200"
+    Default: "150"
     Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
