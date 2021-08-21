@@ -13,15 +13,15 @@ Parameters:
   CliLambdaInterval:
     Type: String
     # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
-    Default: rate(1 minute)
+    Default: rate(5 minutes)
     Description: "Intervalo de tempo de chamada da função para consulta da API."
   FirehoseInterval: # sec
     Type: Number
-    Default: "600" # 10min
+    Default: "900" # 15min
     Description: "Intervalo de tempo para buffering do firehose."
   FirehoseSize: # MB
     Type: Number
-    Default: "100"
+    Default: "10"
     Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
