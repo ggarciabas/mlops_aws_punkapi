@@ -17,11 +17,11 @@ Parameters:
     Description: "Intervalo de tempo de chamada da função para consulta da API."
   FirehoseInterval: # sec
     Type: Number
-    Default: "300" # 5min
+    Default: "600" # 10min
     Description: "Intervalo de tempo para buffering do firehose."
   FirehoseSize: # MB
     Type: Number
-    Default: "30"
+    Default: "100"
     Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
@@ -104,6 +104,7 @@ Resources:
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
       Events:
+        # Como adicionar o schedule definido aqui?
         ScheduledLambda:
           # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedule.html
           Type: Schedule
@@ -268,9 +269,9 @@ Resources:
         BucketARN: !GetAtt CleanedDataBucket.Arn
         CompressionFormat: UNCOMPRESSED
         RoleARN: !GetAtt FirehoseRole.Arn
-        # BufferingHints:
-        #   IntervalInSeconds: !Ref FirehoseInterval
-        #   SizeInMBs: !Ref FirehoseSize
+        BufferingHints:
+          IntervalInSeconds: !Ref FirehoseInterval
+          SizeInMBs: !Ref FirehoseSize
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
