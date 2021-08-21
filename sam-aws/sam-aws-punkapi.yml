@@ -15,14 +15,6 @@ Parameters:
     # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
     Default: rate(5 minutes)
     Description: "Intervalo de tempo de chamada da função para consulta da API."
-  FirehoseInterval: # sec
-    Type: Number
-    Default: "900" # 15min
-    Description: "Intervalo de tempo para buffering do firehose."
-  FirehoseSize: # MB
-    Type: Number
-    Default: "10"
-    Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -270,8 +262,8 @@ Resources:
         CompressionFormat: UNCOMPRESSED
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
-          IntervalInSeconds: !Ref FirehoseInterval
-          SizeInMBs: !Ref FirehoseSize
+          IntervalInSeconds: 60
+          SizeInMBs: 3
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
@@ -285,9 +277,6 @@ Resources:
           BucketARN: !GetAtt RawDataBucket.Arn
           CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
-          BufferingHints:
-            IntervalInSeconds: !Ref FirehoseInterval
-            SizeInMBs: !Ref FirehoseSize
 
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler
