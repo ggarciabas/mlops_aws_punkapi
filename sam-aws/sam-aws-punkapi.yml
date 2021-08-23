@@ -10,11 +10,6 @@ Parameters:
     Type: String
     Default: "PunkAPIKinesisStream"
     Description: "Define o nome para Kinesis Data Stream."
-  CliLambdaInterval:
-    Type: String
-    # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
-    Default: rate(5 minutes)
-    Description: "Intervalo de tempo de chamada da função para consulta da API."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -104,7 +99,8 @@ Resources:
             Description: "Chama a função lambda de acordo com o tempo configurado."
             Enabled: false
             Name: ScheduledLambda
-            Schedule: !Ref CliLambdaInterval
+            # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
+            Schedule: rate(5 minutes)
 
   ########################################################################
   # Cria repositório para dados Raw
@@ -170,7 +166,7 @@ Resources:
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
-      Timeout: 30
+      Timeout: 60
   
   ########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
@@ -286,6 +282,7 @@ Resources:
               Parameters:
                 - ParameterName: LambdaArn
                   ParameterValue: !GetAtt PunkAPICleanLambda.Arn
+              # Como alterar as propriedades de buffer? No painel fica o default 3MB e 60s.
         S3BackupMode: Enabled
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
         S3BackupConfiguration:
