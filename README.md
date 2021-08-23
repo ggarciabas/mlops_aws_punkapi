@@ -4,7 +4,8 @@
 [![](https://img.shields.io/badge/serverless-layers?style=for-the-badge&logo=serverless&labelColor=white&color=red&)](https://www.serverless.com/) 
 [![](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&labelColor=white)](https://www.python.org/)
 [![](https://img.shields.io/badge/Colab-Google?style=for-the-badge&labelColor=white&color=orange&logo=googlecolab)](https://colab.research.google.com/)
-<!--[![](https://img.shields.io/badge/VsCode-007ACC?style=for-the-badge&labelColor=white&color=007ACC&logo=vscode)](https://code.visualstudio.com/)-->
+[![](https://img.shields.io/badge/VsCode-007ACC?style=for-the-badge&labelColor=white&color=007ACC&logo=visualstudiocode&logoColor=007ACC)](https://code.visualstudio.com/)
+[![](https://img.shields.io/badge/Github-181717?style=for-the-badge&labelColor=white&color=181717&logo=github&logoColor=181717)](https://code.visualstudio.com/)
 
 
 ## Desafio Punk API
@@ -17,12 +18,21 @@
 ### Colab
 
 Para acessar os notebooks via colab:
-- [Exploração da API](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/master/notebooks/Explora_API.ipynb)
+- :heavy_check_mark: [Exploração da API](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/master/notebooks/Explora_API.ipynb)
+- :heavy_check_mark: [Modelo ML](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/master/notebooks/Modelagem_Final.ipynb)
 
 ### SAM
 <!-- Adicionar caminhos para os scripts -->
 
-### Github action SAM CLI
+- :heavy_check_mark: [Configurações SAM](https://github.com/ggarciabas/mlops_aws_punkapi/blob/analise/sam-aws/sam-aws-punkapi.yml)
+- :heavy_check_mark: [Função Lambda para consultar API](https://github.com/ggarciabas/mlops_aws_punkapi/blob/analise/sam-aws/punkapi_cli/app.py)
+- :heavy_check_mark: [Função Lambda para limpar dados](https://github.com/ggarciabas/mlops_aws_punkapi/blob/analise/sam-aws/punkapi_clean/app.py)
+
+### Github actions
+
+- :heavy_check_mark: [Workflow para criar arquitetura na AWS](https://github.com/ggarciabas/mlops_aws_punkapi/blob/analise/.github/workflows/sam-pipeline.yml)
+
+#### SAM CLI
 > This Action enables you to run AWS SAM CLI commands in order to build, package, and deploy serverless applications as part of your workflow.
 
 - [Setup AWS SAM CLI](https://github.com/marketplace/actions/setup-aws-sam-cli)
