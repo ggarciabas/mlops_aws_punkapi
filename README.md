@@ -15,12 +15,12 @@
 ### Arquitetura
 <!-- Aprensentar arquitetura -->
 
-![](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/master/img/arquitetura_final.png)
+![](https://github.com/ggarciabas/mlops_aws_punkapi/raw/main/img/arquitetura_final.png)
 
 
 #### Cloud formation designer 
 
-![](https://colab.research.google.com/github/ggarciabas/mlops_aws_punkapi/blob/master/img/cloud_formation_designer.png)
+![](https://github.com/ggarciabas/mlops_aws_punkapi/raw/main/img/cloud_formation_designer.png)
 
 ### Colab
 
