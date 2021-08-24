@@ -10,19 +10,6 @@ Parameters:
     Type: String
     Default: "PunkAPIKinesisStream"
     Description: "Define o nome para Kinesis Data Stream."
-  CliLambdaInterval:
-    Type: String
-    # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
-    Default: rate(1 minute)
-    Description: "Intervalo de tempo de chamada da função para consulta da API."
-  FirehoseInterval: # sec
-    Type: Number
-    Default: "300" # 5min
-    Description: "Intervalo de tempo para buffering do firehose."
-  FirehoseSize: # MB
-    Type: Number
-    Default: "30"
-    Description: "Intervalo de tempo para buffering do firehose."
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -104,6 +91,7 @@ Resources:
       # Permite enviar dados para Kinesis e escrever no log
       Role: !GetAtt LambdaPinkApiCliRole.Arn
       Events:
+        # Como adicionar o schedule definido aqui?
         ScheduledLambda:
           # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedule.html
           Type: Schedule
@@ -111,7 +99,8 @@ Resources:
             Description: "Chama a função lambda de acordo com o tempo configurado."
             Enabled: false
             Name: ScheduledLambda
-            Schedule: !Ref CliLambdaInterval
+            # Doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions
+            Schedule: rate(5 minutes)
 
   ########################################################################
   # Cria repositório para dados Raw
@@ -177,7 +166,7 @@ Resources:
       VersionDescription: "0.01"
       Description: "Função lambda que resgata os campos de interesse."
       Role: !GetAtt LambdaCleanRole.Arn
-      Timeout: 30
+      Timeout: 60
   
   ########################################################################
   # Cria regra de acesso do Firehose para Kinesis Stream
@@ -240,6 +229,17 @@ Resources:
               Effect: Allow
               Resource:
                 - !GetAtt PunkAPICleanLambda.Arn
+        - PolicyName: LogPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Effect: Allow
+              Resource: 
+                - "arn:aws:logs:*:*:*"
       RoleName: FirehoseRole
       Description: "Cria uma regra para permitir o firehose acessar dados do Kinesis e escrever no S3."
 
@@ -269,24 +269,29 @@ Resources:
         CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         BufferingHints:
-          IntervalInSeconds: !Ref FirehoseInterval
-          SizeInMBs: !Ref FirehoseSize
+          IntervalInSeconds: 900
+          SizeInMBs: 10
+          # GetRecords (Data Stream) can retrieve up to 10 MB of data per call from a single shard
+          # Ref: https://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html
         # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-processingconfiguration.html
         ProcessingConfiguration:
           Enabled: true
+          # Doc: https://aws.amazon.com/kinesis/data-streams/pricing/
           Processors:
             - Type: Lambda
               Parameters:
                 - ParameterName: LambdaArn
                   ParameterValue: !GetAtt PunkAPICleanLambda.Arn
+              # Como alterar as propriedades de buffer? No painel fica o default 3MB e 60s.
         S3BackupMode: Enabled
+        # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
         S3BackupConfiguration:
           BucketARN: !GetAtt RawDataBucket.Arn
           CompressionFormat: GZIP
           RoleARN: !GetAtt FirehoseRole.Arn
           BufferingHints:
-            IntervalInSeconds: !Ref FirehoseInterval
-            SizeInMBs: !Ref FirehoseSize
+            IntervalInSeconds: 900
+            SizeInMBs: 10
 
   ########################################################################
   # Cria Database para armazenar os metadados identificados pelo crawler

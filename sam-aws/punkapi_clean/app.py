@@ -6,6 +6,8 @@ filter_keys = ['id', 'name', 'abv', 'ibu', 'target_fg', 'target_og', 'ebc', 'srm
 def lambda_handler(event, context):
     output = []
 
+    print (f"Evento: {event}")
+
     print (f"Leitura dos registros: {len(event['records'])}")
     for record in event['records']:
         print(f"ID: {record['recordId']}")
@@ -19,7 +21,7 @@ def lambda_handler(event, context):
         print (f"Data dict: {data_dict}")
         final_data  = { k: data_dict[k] for k in filter_keys }
         print (f"Chaves finais: {final_data.keys()}")
-        encoded_data = str(final_data).encode()
+        encoded_data = f"{final_data}\n".encode()
         print (f"Encoded final data: {encoded_data}")
 
         output_record = {
@@ -30,6 +32,7 @@ def lambda_handler(event, context):
         output.append(output_record)
 
     print(f"Processado {len(event['records'])} registros com sucesso.")
+    print(f"Output: {output}")
 
     return {'records': output}
 
