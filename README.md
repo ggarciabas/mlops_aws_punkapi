@@ -18,10 +18,6 @@
 ![](https://github.com/ggarciabas/mlops_aws_punkapi/raw/main/img/arquitetura_final.png)
 
 
-#### Cloud formation designer 
-
-![](https://github.com/ggarciabas/mlops_aws_punkapi/raw/main/img/cloud_formation_designer.png)
-
 ### Colab
 
 Para acessar os notebooks via colab:
